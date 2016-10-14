@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- [y] hybris Platform
+ 
+ Copyright (c) 2000-2016 SAP SE or an SAP affiliate company.
+ All rights reserved.
+ 
+ This software is the confidential and proprietary information of SAP
+ ("Confidential Information"). You shall not disclose such Confidential
+ Information and shall use it only in accordance with the terms of the
+ license agreement you entered into with SAP.
+-->
+
+<!-- 
+  WARNING: This is the Spring WEB configuration file. If you want to replace
+  items or managers you have to do this from the extensions core configuration 
+  file (hybristoolsgui/resources/hybristoolsgui-spring.xml) 
+  -->
+
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans.xsd 
+						http://www.springframework.org/schema/aop 
+						http://www.springframework.org/schema/aop/spring-aop.xsd"
+	default-autowire="byName">
+	
+	<!-- 
+		UICockpitSession represents session in an cockpit application. It manages e.g. the available cockpit perspectives.
+	 -->
+	<bean id="UICockpitSession" class="de.hybris.platform.cockpit.session.impl.UISessionImpl" scope="session">
+		<property name="initialSessionListeners">
+			<list></list>
+		</property>
+		<property name="availablePerspectives">
+			<list>
+				<ref bean="HybristoolsguiPerspective"/>
+			</list>
+		</property>
+		<property name="usingTestIDs" value="false" />
+		<property name="dragOverPerspectivesEnabled" value="true" />
+		<property name="cachePerspectivesEnabled" value="true" />
+		<property name="sendEventsImmediately" value="false" />
+		<property name="requestHandler" ref="RequestHandler" />
+	</bean>
+	
+	<bean id="themeConfig" class="de.hybris.platform.cockpit.util.CockpitThemeConfig" scope="singleton">
+		<property name="keepZKCss" value="false" />
+		<property name="uris">
+			<list>
+				<value>/cockpit/css/zk_essential.css</value>
+				<value>/cockpit/css/zk_recommended.css</value>
+				<!-- <value>/cockpit/css/zk_additional.css</value> -->
+
+				<value>/cockpit/css/cockpit_essential.css</value>
+				<value>/cockpit/css/cockpit_comments.css</value>
+				<value>/cockpit/css/cockpit_compare.css</value>
+				<value>/cockpit/css/cockpit_login.css</value>
+				<value>/cockpit/css/cockpit_navsections.css</value>
+				<value>/cockpit/css/cockpit_refeditor.css</value>
+				<value>/cockpit/css/cockpit_sectionbrowser.css</value>
+				<value>/cockpit/css/cockpit_widgets.css</value>
+				<value>/cockpit/css/cockpit_wizard.css</value>
+				<value>/cockpit/css/cockpit_workflow.css</value>
+				<value>/cockpit/css/cockpit_fileupload.css</value>
+
+				<value>/hybristoolsgui/css/hybristoolsgui.css</value>
+			</list>
+		</property>
+		<property name="ieCssUris">
+			<list>
+				<value>/cockpit/css/cockpit_essential_ie.css</value>
+			</list>
+		</property>
+	</bean>
+
+	<!-- 
+		Hybristoolsgui perspective.
+	 -->
+	<bean id="HybristoolsguiPerspective" scope="session" parent="BasePerspective">
+		<property name="uid" value="hybristoolsgui.perspective.hybristoolsgui" />  <!-- unique ID of the perspective -->
+		<property name="label" value="perspective.hybristoolsgui" />  <!-- localization key for the label of the perspective -->
+		<property name="customCsaURI" value="/hybristoolsgui/hybristoolsguiCSA.zul" />  <!-- file with optional custom client side actions -->
+
+		<property name="navigationArea">
+			<ref bean="HybristoolsguiNavigationArea" />
+		</property>
+		<property name="browserArea">
+			<bean class="com.epam.hybristoolsgui.session.impl.HybristoolsguiBrowserArea">
+				<property name="rootSearchTypeCode" value="Product"/>
+				<property name="viewURI" value="/cockpit/baseSearchBrowserArea.zul"/>
+			</bean>
+		</property>
+		<property name="editorArea">
+			<bean id="HybristoolsguiEditorAreaModel" parent="BaseEditorAreaModel">
+			<property name="editorAreaController">
+					<ref bean="HybristoolsguiEditorAreaController"/>
+				</property>
+			</bean>	
+		</property>
+		<property name="popupEditorArea">		
+			<bean id="HybristoolsguiPopupEditor" parent="BasePopupEditor">
+				<property name="editorAreaController">
+					<ref bean="HybristoolsguiPopupEditorAreaController"/>
+				</property>
+			</bean>
+		</property>
+		<property name="cockpitTypeService" ref="cockpitTypeService"/>		
+	</bean>
+	
+	<bean id="HybristoolsguiNavigationArea" class="com.epam.hybristoolsgui.session.impl.HybristoolsguiNavigationArea" scope="session" parent="BaseNavigationArea">
+		<property name="sectionModel">
+			<ref bean="HybristoolsguiNavigationAreaModel"/>	
+		</property>		
+		<property name="infoSlotRenderer">
+			<bean class="de.hybris.platform.cockpit.components.navigationarea.renderer.InfoBoxRenderer"/>
+		</property>
+		<property name="sections">
+			<list>
+				<ref bean="HybristoolsguiUndoSection" />
+			</list>
+		</property>
+		<property name="cockpitTypeService" ref="cockpitTypeService"/>
+	</bean>
+	
+	<bean id="HybristoolsguiNavigationAreaModel" class="com.epam.hybristoolsgui.components.navigationarea.HybristoolsguiNavigationAreaModel" scope="session">
+		<property name="specialCollectionTypes">
+			<list>
+				<value>blacklist</value>
+				<value>quickcollection</value>
+			</list>
+		</property>						
+	</bean>
+	
+	<bean id="HybristoolsguiUndoSection" class="de.hybris.platform.cockpit.components.navigationarea.NavigationPanelSection" scope="prototype">
+		<property name="localizedLabel" value="navigationarea.history" />
+		<property name="visible" value="true" />
+		<property name="renderer">
+			<bean class="de.hybris.platform.cockpit.components.navigationarea.renderer.UndoSectionRenderer" />
+		</property>
+	</bean>
+	
+	<bean id="HybristoolsguiEditorAreaController" class="de.hybris.platform.cockpit.session.impl.DefaultEditorAreaController" scope="session">
+		<property name="sectionRowRenderer">
+			<bean id="HybristoolsguiEditorSectionRowRenderer" parent="EditorSectionRowRenderer"/>
+		</property>
+		<property name="editorFactory">
+			<ref bean="EditorFactory"/>
+		</property>
+	</bean>
+	
+	<bean id="HybristoolsguiPopupEditorAreaController" class="com.epam.hybristoolsgui.session.impl.HybristoolsguiPopupEditorAreaControllerImpl" scope="prototype">
+		<property name="sectionRowRenderer">
+			<bean id="HybristoolsguiPopupEditorSectionRowRenderer" parent="EditorSectionRowRenderer"/>
+		</property>
+		<property name="editorFactory">
+			<ref bean="EditorFactory"/>
+		</property>
+	</bean>
+	
+	<bean id="RequestHandler" class="de.hybris.platform.cockpit.session.impl.DefaultRequestHandler" scope="session">
+		<property name="requestEventHandlers">
+			<map>
+				<entry key="activation">
+					<bean class="de.hybris.platform.cockpit.session.impl.ActivationEventHandler">
+						<property name="prefix" value="act" />
+					</bean>
+				</entry>
+				<entry key="search">
+					<bean class="de.hybris.platform.cockpit.session.impl.SearchEventHandler">
+						<property name="prefix" value="srch" />
+					</bean>
+				</entry>
+				<entry key="celum">
+					<bean class="de.hybris.platform.cockpit.session.impl.CelumEventHandler" />
+				</entry>
+				<entry key="msg">
+					<bean class="de.hybris.platform.cockpit.session.impl.NotificationEventHandler">
+						<property name="prefix" value="msg" />
+					</bean>
+				</entry>
+			</map>
+		</property>
+	</bean>
+	
+	<!-- filter -->	
+	<bean id="yCockpitFilterChain" class="de.hybris.platform.servicelayer.web.BackOfficeFilterChain">
+		<constructor-arg>
+			<list>
+				<ref bean="log4jFilter"/>
+				<ref bean="dynamicTenantActivationFilter"/>				
+				<ref bean="sessionFilter"/>
+				<ref bean="yCockpitDataSourceSwitchingFilter"/>
+				<ref bean="yCockpitCatalogVersionActivationFilter"/>
+            	<ref bean="yCockpitSecureMediaFilter"/>
+			</list>
+		</constructor-arg>
+	</bean>
+	
+
+	<bean id="yCockpitDataSourceSwitchingFilter" class="de.hybris.platform.servicelayer.web.DataSourceSwitchingFilter">
+	</bean>
+	
+	 <bean id="yCockpitCatalogVersionActivationFilter" class="de.hybris.platform.servicelayer.web.DynamicCatalogVersionActivationFilter" scope="tenant">
+		<property name="catalogVersionService" ref="catalogVersionService"/>
+		<property name="catalogService" ref="catalogService"/>
+		<aop:scoped-proxy/>
+	</bean>
+ 
+   <bean id="yCockpitSecureMediaFilter" class="de.hybris.platform.servicelayer.web.SecureMediaFilter">
+       <property name="mediaPermissionService" ref="mediaPermissionService"/>
+       <property name="modelService" ref="modelService"/>
+       <property name="userService" ref="userService"/>
+       <property name="mediaService" ref="mediaService"/>
+      <!-- <property name="secureMediaToken" value="securemedias"/>  securemedias is default but you may overwrite it -->
+       <aop:scoped-proxy/>
+     </bean>
+	
+</beans>
+	

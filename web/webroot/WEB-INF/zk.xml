@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- [y] hybris Platform
+ 
+ Copyright (c) 2000-2016 SAP SE or an SAP affiliate company.
+ All rights reserved.
+ 
+ This software is the confidential and proprietary information of SAP
+ ("Confidential Information"). You shall not disclose such Confidential
+ Information and shall use it only in accordance with the terms of the
+ license agreement you entered into with SAP.
+-->
+<zk>
+	<session-config>
+    	<max-desktops-per-session>1</max-desktops-per-session>        
+	</session-config>
+	
+	<desktop-config>
+		<theme-provider-class>de.hybris.platform.cockpit.util.CockpitThemeProvider</theme-provider-class>
+ 	</desktop-config>
+	
+	<language-config>
+		<!-- hybris custom components -->
+		<addon-uri>/cockpit/customcomponents/components-lang-addon.xml</addon-uri>
+	</language-config>
+	<listener>
+		<listener-class>
+			de.hybris.platform.cockpit.util.HybrisThreadInit
+		</listener-class>
+	</listener>
+	<listener>
+		<listener-class>
+			de.hybris.platform.cockpit.util.HybrisThreadCleanup
+		</listener-class>
+	</listener>
+	<listener>
+		<listener-class>
+			de.hybris.platform.cockpit.util.HybrisDesktopCleanup
+		</listener-class>
+	</listener>
+	<listener>
+		<description>ThreadLocal variables synchronizer</description>
+		<!-- ThreadLocalListener thows NPEx so we're using our own copy by now -->
+		<!--  <listener-class>org.zkoss.zkplus.util.ThreadLocalListener</listener-class> -->
+		<listener-class>de.hybris.platform.cockpit.util.HybrisThreadLocalListener</listener-class>
+	</listener>
+
+    <system-config>
+        <engine-class>org.zkoss.zk.ui.impl.HybrisUiEngineImpl</engine-class>
+    </system-config>
+
+	<log>
+		<log-base>org.zkoss</log-base>
+	</log>
+	<preference>
+		<name>ThreadLocal</name>
+		<value>
+			org.springframework.web.context.request.RequestContextHolder=requestAttributesHolder,inheritableRequestAttributesHolder;org.springframework.security.core.context.ThreadLocalSecurityContextHolderStrategy=contextHolder;
+		</value>
+	</preference>
+	<device-config>
+	    <device-type>ajax</device-type>
+	    <!-- somehow timeout is triggered even after logout so we have to disable it until this is fixed    
+	    <timeout-uri>/login.zul?timeout=true</timeout-uri>    
+	    -->
+	    <timeout-uri>/</timeout-uri>    
+	</device-config>
+	
+	<client-config>
+		<tooltip-delay>1000</tooltip-delay>
+	</client-config>
+	<client-config>
+		<click-filter-delay>190</click-filter-delay>
+	</client-config>
+	
+	<preference>
+		<!-- if you don't use internet explorer on client side you can comment this out	-->
+		<name>de.hybris.platform.cockpit.doubleClickDelay</name>
+		<value>300</value>
+	</preference>
+	<preference>
+		<name>de.hybris.platform.cockpit.path_to_aspell</name>
+		<value>/usr/bin/aspell</value>
+<!--		WINDOWS <value>C:\\Program Files\\Aspell\\bin\\aspell.exe</value>-->
+<!--		 APPLE <value>/opt/local/bin/aspell</value> -->
+	</preference>
+	
+	
+	<preference>
+		 \n<!--		 	allows you to set the lazyload packet size for browser views, i.e. how many items will be rendered in one rendering cycle
+		 	
+		 	Allowed values examples:
+			  -1 	- disable lazyloading
+			  20	- set the default and initial packet size to 20
+			  2,10	- set the initial packet size to 2 and the default to 20 (setting initial to a low value can improve ui feedback, e.g. when login or switching tabs)
+		  -->
+		<name>de.hybris.platform.cockpit.browserview.renderPacketSize</name>
+		<value>0,20</value>
+	</preference>
+	
+	<preference>
+		\n<!--		may be needed for Internet Explorer clients to render gridview properly 
+		when using de.hybris.platform.cockpit.browserview.renderPacketSize
+		
+			auto 	- automatically enabled/disabled depending on client browser (recommended)
+			true 	- always enabled
+			false 	- always disabled   		 	
+		 -->
+		<name>de.hybris.platform.cockpit.browserview.invalidateGridAfterLoading</name>
+		<value>auto</value>
+	</preference>
+	
+	\n<!--		To control the number of lines to log an error message. Default: 6. If non positive is specified, the full stack traces are
+		logged.
+	-->
+	<library-property>
+		<name>org.zkoss.util.logging.realCauseBriefly</name>
+		<value>0</value>
+	</library-property>	
+</zk>

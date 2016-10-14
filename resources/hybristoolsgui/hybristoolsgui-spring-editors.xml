@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- [y] hybris Platform
+ 
+ Copyright (c) 2000-2016 SAP SE or an SAP affiliate company.
+ All rights reserved.
+ 
+ This software is the confidential and proprietary information of SAP
+ ("Confidential Information"). You shall not disclose such Confidential
+ Information and shall use it only in accordance with the terms of the
+ license agreement you entered into with SAP.
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/aop
+           http://www.springframework.org/schema/aop/spring-aop.xsd"
+    default-autowire="byName">
+
+<!-- remove comment if you want to have cockpit-specific editor mapping -->
+
+<!-- 	<alias alias="EditorFactory" name="defaultEditorFactoryHybristoolsgui" /> -->
+<!-- 	<bean id="defaultEditorFactoryHybristoolsgui" class="de.hybris.platform.cockpit.model.meta.DefaultEditorFactory" scope="singleton"> -->
+<!--		<property name="editorDescriptors">-->
+<!--			<list>-->
+<!--				<bean class="de.hybris.platform.cockpit.model.meta.DefaultPropertyEditorDescriptor">-->
+<!--					<property name="editorType" value="TEXT"/>-->
+<!--					<property name="defaultMode" value="single"/>-->
+<!--					<property name="defaultEditor" value="de.hybris.platform.cockpit.model.editor.impl.DefaultTextUIEditor" />-->
+<!--					<property name="editors">-->
+<!--						<map>-->
+<!--							<entry key="multi" value="de.hybris.platform.cockpit.model.editor.impl.GenericCollectionUIEditor"/>-->
+<!--							<entry key="range" value="de.hybris.platform.cockpit.model.editor.impl.GenericRangeUIEditor"/>-->
+<!--							<entry key="imageEditor" value="de.hybris.platform.cockpit.model.editor.impl.DefaultImageUIEditor"/>-->
+<!--							<entry key="wysiwyg" value="de.hybris.platform.cockpit.model.editor.WysiwygUIEditor"/>-->
+<!--						</map>-->
+<!--					</property>-->
+<!--					<property name="label" value="textEditor"/>-->
+<!--				</bean>-->
+<!--				<bean class="de.hybris.platform.cockpit.model.meta.DefaultPropertyEditorDescriptor">-->
+<!--					<property name="editorType" value="INTEGER"/>-->
+<!--					<property name="defaultMode" value="single"/>-->
+<!--					<property name="defaultEditor" value="de.hybris.platform.cockpit.model.editor.impl.DefaultIntegerUIEditor" />-->
+<!--					<property name="editors">-->
+<!--						<map>-->
+<!--							<entry key="multi" value="de.hybris.platform.cockpit.model.editor.impl.GenericCollectionUIEditor"/>-->
+<!--							<entry key="range" value="de.hybris.platform.cockpit.model.editor.impl.GenericRangeUIEditor"/>-->
+<!--						</map>-->
+<!--					</property>-->
+<!--					<property name="label" value="integerEditor"/>-->
+<!--				</bean>-->
+<!--				<bean class="de.hybris.platform.cockpit.model.meta.DefaultPropertyEditorDescriptor">-->
+<!--					<property name="editorType" value="LONG"/>-->
+<!--					<property name="defaultMode" value="single"/>-->
+<!--					<property name="defaultEditor" value="de.hybris.platform.cockpit.model.editor.impl.DefaultLongUIEditor" />-->
+<!--					<property name="editors">-->
+<!--						<map>-->
+<!--							<entry key="multi" value="de.hybris.platform.cockpit.model.editor.impl.GenericCollectionUIEditor"/>-->
+<!--							<entry key="range" value="de.hybris.platform.cockpit.model.editor.impl.GenericRangeUIEditor"/>-->
+<!--						</map>-->
+<!--					</property>-->
+<!--					<property name="label" value="longEditor"/>-->
+<!--				</bean>-->
+<!--				<bean class="de.hybris.platform.cockpit.model.meta.DefaultPropertyEditorDescriptor">-->
+<!--					<property name="editorType" value="DATE"/>-->
+<!--					<property name="defaultMode" value="single"/>-->
+<!--					<property name="defaultEditor" value="de.hybris.platform.cockpit.model.editor.impl.DefaultDateUIEditor" />-->
+<!--					<property name="editors">-->
+<!--						<map>-->
+<!--							<entry key="multi" value="de.hybris.platform.cockpit.model.editor.impl.GenericCollectionUIEditor"/>-->
+<!--							<entry key="range" value="de.hybris.platform.cockpit.model.editor.impl.GenericRangeUIEditor"/>-->
+<!--						</map>-->
+<!--					</property>-->
+<!--					<property name="label" value="dateEditor"/>-->
+<!--				</bean>-->
+<!--				<bean class="de.hybris.platform.cockpit.model.meta.DefaultPropertyEditorDescriptor">-->
+<!--					<property name="editorType" value="PK"/>-->
+<!--					<property name="defaultMode" value="single"/>-->
+<!--					<property name="defaultEditor" value="de.hybris.platform.cockpit.model.editor.impl.DefaultPKUIEditor" />-->
+<!--					<property name="editors">-->
+<!--						<map>-->
+<!--							<entry key="multi" value="de.hybris.platform.cockpit.model.editor.impl.GenericCollectionUIEditor"/>-->
+<!--							<entry key="range" value="de.hybris.platform.cockpit.model.editor.impl.GenericRangeUIEditor"/>-->
+<!--						</map>-->
+<!--					</property>-->
+<!--					<property name="label" value="pkEditor"/>-->
+<!--				</bean>				-->
+<!--				<bean class="de.hybris.platform.cockpit.model.meta.DefaultPropertyEditorDescriptor">-->
+<!--					<property name="editorType" value="DECIMAL"/>-->
+<!--					<property name="defaultMode" value="single"/>-->
+<!--					<property name="defaultEditor" value="de.hybris.platform.cockpit.model.editor.impl.DefaultDecimalUIEditor" />-->
+<!--					<property name="editors">-->
+<!--						<map>-->
+<!--							<entry key="multi" value="de.hybris.platform.cockpit.model.editor.impl.GenericCollectionUIEditor"/>-->
+<!--							<entry key="range" value="de.hybris.platform.cockpit.model.editor.impl.GenericRangeUIEditor"/>-->
+<!--						</map>-->
+<!--					</property>-->
+<!--					<property name="label" value="decimalEditor"/>-->
+<!--				</bean>-->
+<!--				<bean class="de.hybris.platform.cockpit.model.meta.DefaultPropertyEditorDescriptor">-->
+<!--					<property name="editorType" value="BOOLEAN"/>-->
+<!--					<property name="defaultMode" value="single"/>-->
+<!--					<property name="defaultEditor" value="de.hybris.platform.cockpit.model.editor.impl.DefaultBooleanUIEditor" />-->
+<!--					<property name="editors">-->
+<!--						<map>-->
+<!--							<entry key="multi" value="de.hybris.platform.cockpit.model.editor.impl.GenericCollectionUIEditor"/>-->
+<!--							<entry key="range" value="de.hybris.platform.cockpit.model.editor.impl.GenericRangeUIEditor"/>-->
+<!--						</map>-->
+<!--					</property>-->
+<!--					<property name="label" value="booleanEditor"/>-->
+<!--				</bean>-->
+<!--				<bean class="de.hybris.platform.cockpit.model.meta.DefaultPropertyEditorDescriptor">-->
+<!--					<property name="editorType" value="ENUM"/>-->
+<!--					<property name="defaultEditor" value="de.hybris.platform.cockpit.model.editor.impl.DefaultEnumUIEditor" />-->
+<!--					<property name="defaultMode" value="single"/>-->
+<!--					<property name="editors">-->
+<!--						<map>-->
+<!--							<entry key="multi" value="de.hybris.platform.cockpit.model.editor.impl.GenericCollectionUIEditor"/>-->
+<!--							<entry key="range" value="de.hybris.platform.cockpit.model.editor.impl.GenericRangeUIEditor"/>-->
+<!--						</map>-->
+<!--					</property>-->
+<!--					<property name="label" value="enumEditor"/>-->
+<!--				</bean>-->
+<!--				<bean class="de.hybris.platform.cockpit.model.meta.DefaultPropertyEditorDescriptor">-->
+<!--					<property name="editorType" value="DUMMY"/>-->
+<!--					<property name="defaultEditor" value="de.hybris.platform.cockpit.model.editor.impl.DefaultDummyUIEditor" />-->
+<!--					<property name="defaultMode" value="single"/>-->
+<!--					<property name="editors">-->
+<!--						<map>-->
+<!--							<entry key="multi" value="de.hybris.platform.cockpit.model.editor.impl.GenericCollectionUIEditor"/>-->
+<!--							<entry key="range" value="de.hybris.platform.cockpit.model.editor.impl.GenericRangeUIEditor"/>-->
+<!--						</map>-->
+<!--					</property>-->
+<!--					<property name="label" value="dummyEditor"/>-->
+<!--				</bean>-->
+<!--				<bean class="de.hybris.platform.cockpit.model.meta.DefaultPropertyEditorDescriptor">-->
+<!--					<property name="editorType" value="REFERENCE"/>-->
+<!--					<property name="defaultMode" value="single"/>-->
+<!--					<property name="defaultEditor" value="de.hybris.platform.cockpit.model.referenceeditor.impl.DefaultReferenceUIEditor" />-->
+<!--					<property name="editors">-->
+<!--						<map>-->
+<!--							<entry key="multi" value="de.hybris.platform.cockpit.model.referenceeditor.impl.DefaultReferenceCollectionUIEditor"/>-->
+<!--							<entry key="listViewReferenceEditor" value="de.hybris.platform.cockpit.model.referenceeditor.impl.ListViewCollectionEditor"/>-->
+<!--							<entry key="browserContextEditor" value="de.hybris.platform.cockpit.model.referenceeditor.impl.ContextAreaReferenceCollectionUIEditor"/>-->
+<!--							<entry key="mediaReferenceSelector" value="de.hybris.platform.cockpit.model.referenceeditor.impl.DefaultMediaReferenceUIEditor"/>-->
+<!--							<entry key="mediaReferenceCollectionSelector" value="de.hybris.platform.cockpit.model.referenceeditor.impl.DefaultMediaReferenceCollectionUIEditor"/>-->
+<!--							<entry key="simple" value="de.hybris.platform.cockpit.model.referenceeditor.impl.SimpleReferenceUIEditor"/>-->
+<!--							<entry key="shortListEditor" value="de.hybris.platform.cockpit.model.editor.impl.DefaultSelectUIEditor"/>-->
+<!--						</map>-->
+<!--					</property>-->
+<!--					<property name="label" value="referenceEditor"/>-->
+<!--				</bean>-->
+<!--			</list>-->
+<!--		</property>-->
+<!--	</bean>-->
+	
+</beans>           
