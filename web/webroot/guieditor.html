@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html ng-app="guieditorApp">
+<head>
+    <script src="node_modules/jquery/dist/jquery.min.js"></script>
+
+    <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css" />
+    <script src="node_modules/angular/angular.min.js"></script>
+    <script src="node_modules/angular-route/angular-route.min.js"></script>
+    <script src="guieditor/guieditor.js"></script>
+
+    <script src="guieditor/Observable.js"></script>
+    <script src="guieditor/ServerConfig.js"></script>
+    <script src="guieditor/FSql.js"></script>
+    <script src="guieditor/TypeSystem.js"></script>
+    <link rel="stylesheet" href="guieditor/guieditor.css" />
+</head>
+<body>
+
+<!-- HEADER AND NAVBAR -->
+<header>
+    <nav class="navbar navbar-default">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/">Hybris tools gui</a>
+            </div>
+
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#"><i class="fa fa-home"></i> Home</a></li>
+                <li><a href="#contact"><i class="fa fa-comment"></i> Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+</header>
+
+<!-- MAIN CONTENT AND INJECTED VIEWS -->
+<div id="main">
+    <div ng-view></div>
+</div>
+
+</body>
+</html>
