@@ -3,16 +3,17 @@ var guieditorApp = angular.module('guieditorApp', ['ngRoute']);
 guieditorApp.config(function($routeProvider) {
     $routeProvider
     .when('/', {
-        templateUrl : 'guieditor/pages/flexsearch.html',
+        templateUrl : 'pages/flexsearch.html',
         controller  : 'flexsearchController'
     })
     .when('/contact', {
-        templateUrl : 'guieditor/pages/contact.html',
+        templateUrl : 'pages/contact.html',
         controller  : 'contactController'
     });
 });
 
 guieditorApp.controller('flexsearchController', function($scope) {
+    let sqlEditor = createFSQLEditor($(".fsql")[0]);
     let serverConfig = new ServerConfig({
         url: "https://localhost:9002/tools"
     });
