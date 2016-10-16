@@ -1,25 +1,29 @@
 class TypeSystem extends Observable {
-    constructor(serverCfg) {
+    constructor(con) {
         super();
-        this.serverCfg = serverCfg;
+        this.con = con;
+    }
+
+    set connection(c) {
+        this.con = c;
     }
 
     getType(pk) {
-        let url = this.serverCfg.getObjectTypeUrl(pk);
+        let url = this.con.getObjectTypeUrl(pk);
         $.ajax({
             url: url
         }).then((data) => {
-            let type = this.serverCfg.convertGetTypeResult(data);
+            let type = this.con.convertGetTypeResult(data);
             this.emit("getTypeDone", type);
         });
     }
 
     getTypeAttributes(type) {
-        let url = this.serverCfg.getTypeInfoUrl(type);
+        let url = this.con.getTypeInfoUrl(type);
         $.ajax({
             url: url
         }).then((data) => {
-            let type = this.serverCfg.convertTypeInfo(data);
+            let type = this.con.convertTypeInfo(data);
             this.emit("typeInfoDone", type);
         });
 

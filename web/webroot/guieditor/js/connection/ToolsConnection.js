@@ -1,10 +1,16 @@
-class ServerConfig {
+class ToolsConnection {
     constructor(cfg) {
         this._url = cfg.url;
     }
 
     get url () {
         return this._url;
+    }
+
+    get params () {
+        return {
+            url: this._url
+        }
     }
 
     get fsqlUrl () {
@@ -80,5 +86,24 @@ class ServerConfig {
             attributes: attributes
         }
     }
+
+    testAsync() {
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                url: this._url
+            }).then((data) => {
+                if (data && data.indexOf("hybristoolsserver") != -1) {
+                    resolve();
+                } else {
+                    reject();
+                }
+            }, (data) => {
+                console.error(data);
+                reject(data);
+            });
+        });
+    }
+
+    close() {}
 
 }

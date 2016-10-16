@@ -1,0 +1,22 @@
+<div class="container">
+    <h1>Connection settings</h1>
+    <form>
+        <div class="form-group">
+            <label>Connection point</label>
+            <div class="setting-url input-group">
+                <span class="input-group-addon" id="basic-addon1">URL</span>
+                <input ng-model="url" type="text" class="form-control" placeholder="URL" aria-describedby="basic-addon1"/>
+            </div>
+        </div>
+        <button ng-click="test()" type="button"
+                data-testing-text="Connecting..."
+                data-success-text="Success!"
+                data-error-text="Error"
+                class="btn btn-primary js-test-button" autocomplete="off">
+            Test connection
+        </button>
+        <button ng-click="save()" type="button" class="btn btn-default">
+            Save
+        </button>
+    </form>
+</div>

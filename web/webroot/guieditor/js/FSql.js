@@ -1,7 +1,11 @@
 class FSql extends Observable {
-    constructor(serverCfg) {
+    constructor(con) {
         super();
-        this.serverCfg = serverCfg;
+        this.con = con;
+    }
+
+    set connection(c) {
+        this.con = c;
     }
 
     execute(fsql, params) {
@@ -9,12 +13,12 @@ class FSql extends Observable {
         if (params) {
             $.extend(data, params);
         }
-        let url = this.serverCfg.fsqlUrl;
+        let url = this.con.fsqlUrl;
         $.ajax({
             url: url,
             data: data
         }).then((data) => {
-            let table = this.serverCfg.convertFsqlResult(data);
+            let table = this.con.convertFsqlResult(data);
             this.emit("fsqlDone", table, fsql, params);
         });
     }
