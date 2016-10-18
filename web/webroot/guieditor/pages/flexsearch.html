@@ -9,18 +9,23 @@
     </p>
     <div class="row">
         <div class="col-md-7">
-            <div class="panel panel-primary">
-                <div class="panel-heading">FS results</div>
-
-                <table class="panel-body table">
-                    <thead>
-                    <tr>
-                        <th ng-repeat="h in headers">{{h.caption}}</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr ng-repeat="r in data">
-                        <td ng-repeat="c in r">
+            <div class="fsql-results panel panel-primary" ng-init="resultsMode = 'table'">
+                <div class="panel-heading fsql-results-toolbar">
+                    <span>FS results</span>
+                    <button ng-click="resultsMode = resultsMode == 'table' ? 'txt' : 'table'"
+                            type="button" class="btn btn-default btn-xs">
+                        {{resultsMode}}</button>
+                </div>
+                <div class="panel-body" ng-class="{'table-results': resultsMode == 'table', 'textarea-results': resultsMode == 'txt'}">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th ng-repeat="h in headers">{{h.caption}}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="r in data">
+                            <td ng-repeat="c in r">
                             <span ng-switch on="c.type">
                                 <span ng-switch-when="pk" >
                                     <span ng-click="openObject(c.text)" class="pk-link glyphicon glyphicon-info-sign"></span>
@@ -31,10 +36,12 @@
                                 </span>
                             </span>
 
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <textarea rows="10" class="results">{{textareaResults}}</textarea>
+                </div>
             </div>
         </div>
         <div class="col-md-5">
