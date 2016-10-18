@@ -18,15 +18,15 @@ class ToolsConnection {
     }
 
     getTypeDescriptionUrl (type) {
-        return "typesystem/type/" + type + "/attributes";
+        return this.url + "/typesystem/type/" + type + "/attributes";
     }
 
     getObjectTypeUrl (pk) {
-        return "typesystem/pk/" + pk;
+        return this.url + "/typesystem/pk/" + pk;
     }
 
     getTypeInfoUrl(type) {
-        return "typesystem/type/" + type + "/attributes"
+        return this.url + "/typesystem/type/" + type + "/attributes"
     }
 
 
