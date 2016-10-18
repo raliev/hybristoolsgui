@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beansProjectDescription>
+	<version>1</version>
+	<pluginVersion><![CDATA[2.3.0.200912170948-RELEASE]]></pluginVersion>
+	<configSuffixes>
+		<configSuffix><![CDATA[xml]]></configSuffix>
+	</configSuffixes>
+	<enableImports><![CDATA[false]]></enableImports>
+	<configs>
+		<config>resources/hybristoolsgui-spring.xml</config>
+		<config>resources/hybristoolsgui/hybristoolsgui-spring-security.xml</config>
+		<config>resources/hybristoolsgui/hybristoolsgui-spring-services.xml</config>
+		<config>resources/hybristoolsgui/hybristoolsgui-web-spring.xml</config>
+	</configs>
+	<configSets>
+		<configSet>
+			<name><![CDATA[hybristoolsgui]]></name>
+			<allowBeanDefinitionOverriding>true</allowBeanDefinitionOverriding>
+			<incomplete>false</incomplete>
+			<configs>
+				<config>/platform/ext/cockpit/resources/cockpit/cockpit-spring-editors.xml</config>
+				<config>/platform/ext/cockpit/resources/cockpit/cockpit-spring-security.xml</config>
+				<config>/platform/ext/cockpit/resources/cockpit/cockpit-spring-services.xml</config>
+				<config>/platform/ext/cockpit/resources/cockpit/cockpit-spring-wrappers.xml</config>
+				<config>/platform/ext/cockpit/resources/cockpit/cockpit-web-spring.xml</config>
+			</configs>
+		</configSet>
+	</configSets>
+</beansProjectDescription>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html ng-app="guieditorApp">
+<head>
+    <script src="node_modules/jquery/dist/jquery.min.js"></script>
+
+    <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css" />
+    <script src="node_modules/angular/angular.min.js"></script>
+    <script src="node_modules/angular-route/angular-route.min.js"></script>
+
+    <!-- store -->
+    <script src="node_modules/store/store.min.js"></script>
+
+    <!-- codemirror -->
+    <script src="node_modules/codemirror/lib/codemirror.js"></script>
+    <link rel="stylesheet" href="node_modules/codemirror/lib/codemirror.css">
+    <script src="node_modules/codemirror/mode/sql/sql.js"></script>
+    <link rel="stylesheet" href="node_modules/codemirror/addon/hint/show-hint.css" />
+    <script src="node_modules/codemirror/addon/hint/show-hint.js"></script>
+    <script src="node_modules/codemirror/addon/hint/sql-hint.js"></script>
+
+
+    <!-- guieditor -->
+    <script src="js/fsqleditor.js"></script>
+    <script src="js/guieditor.js"></script>
+    <script src="js/controllers/flexsearchController.js"></script>
+    <script src="js/controllers/connectionController.js"></script>
+
+    <script src="js/Observable.js"></script>
+    <script src="js/connection/ToolsConnection.js"></script>
+    <script src="js/connection/ConnectionFactory.js"></script>
+    <script src="js/Settings.js"></script>
+    <script src="js/FSql.js"></script>
+    <script src="js/TypeSystem.js"></script>
+    <link rel="stylesheet" href="css/guieditor.css" />
+</head>
+<body>
+
+<!-- HEADER AND NAVBAR -->
+<header>
+    <nav class="navbar navbar-default">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/">Hybris tools gui</a>
+            </div>
+
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#/"><i class="fa fa-flexsearch"></i> Home</a></li>
+                <li><a href="#connection"><i class="fa fa-connection"></i>Connection</a></li>
+                <li><a href="#contact"><i class="fa fa-comment"></i> Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+</header>
+
+<!-- MAIN CONTENT AND INJECTED VIEWS -->
+<div id="main">
+    <div ng-view></div>
+</div>
+
+</body>
+</html>

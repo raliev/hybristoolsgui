@@ -1,0 +1,56 @@
+<div class="container">
+    <p>
+        <textarea id="fsqlField" ng-model="fsqlField" rows="7" class="fsql"></textarea>
+    </p>
+    <p>
+        <button ng-click="execute()" type="button" class="btn btn-default">
+            Execute
+        </button>
+    </p>
+    <div class="row">
+        <div class="col-md-7">
+            <div class="panel panel-primary">
+                <div class="panel-heading">FS results</div>
+
+                <table class="panel-body table">
+                    <thead>
+                    <tr>
+                        <th ng-repeat="h in headers">{{h.caption}}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="r in data">
+                        <td ng-repeat="c in r">
+                            <span ng-switch on="c.type">
+                                <span ng-switch-when="pk" >
+                                    <span ng-click="openObject(c.text)" class="pk-link glyphicon glyphicon-info-sign"></span>
+                                    {{c.text}}
+                                </span>
+                                <span ng-switch-default>
+                                    {{c.text}}
+                                </span>
+                            </span>
+
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col-md-5">
+            <div class="panel panel-default">
+                <div class="panel-heading">Type: {{objType}} (pk: {{objPk}})</div>
+                <table class="panel-body table">
+                    <tbody>
+                    <tr ng-repeat="r in objTable">
+                        <td ng-repeat="c in r">
+                            {{c.text}}
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
+</div>
