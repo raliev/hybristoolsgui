@@ -24,6 +24,7 @@ guieditorApp.controller('flexsearchController', function($scope) {
         } else {
             $scope.headers = table.headers;
             $scope.data = table.data;
+            $scope.textareaResults = getPlainTxt(table.headers, table.data);
         }
         $scope.$apply();
     });

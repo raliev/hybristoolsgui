@@ -12,6 +12,26 @@ textarea.fsql {
     font-family: monospace;
 }
 
+textarea.results {
+    width: 100%;
+    font-family: monospace;
+}
+
 .fsql-history-list li {
     cursor: pointer;
+}
+.fsql-results .table-results textarea.results {
+    display: none;
+}
+
+.fsql-results .textarea-results table {
+    display: none;
+}
+
+.fsql-results-toolbar span {
+
+}
+
+.fsql-results-toolbar button {
+    float: right;
 }
