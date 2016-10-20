@@ -6,3 +6,12 @@ textarea.fsql {
 .pk-link {
     cursor: pointer;
 }
+
+.sql-history-code {
+    width: 100%;
+    font-family: monospace;
+}
+
+.fsql-history-list li {
+    cursor: pointer;
+}

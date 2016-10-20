@@ -40,18 +40,24 @@ guieditorApp.controller('flexsearchController', function($scope) {
         fsql.execute(sql, {fields: list.join(",")});
         $scope.$apply();
     });
-    $scope.fsqlField = "SELECT {pk} FROM {CMSSite}";
-    $scope.headers = [];
-    $scope.data = [];
-
     $scope.execute = function() {
         let sql = sqlEditor.getValue();
         Settings.instance.rememberSql(sql);
         fsql.execute(sql);
+        $scope.history = settings.sqlHistory;
     }
 
     $scope.openObject = function(pk) {
         $scope.objPk = pk;
         typeSystem.getType(pk);
     }
+
+    $scope.setFSql = function(sql) {
+        sqlEditor.setValue(sql);
+    }
+
+    $scope.fsqlField = "SELECT {pk} FROM {CMSSite}";
+    $scope.headers = [];
+    $scope.data = [];
+    $scope.history = settings.sqlHistory.concat();
 });
