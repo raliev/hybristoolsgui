@@ -1,4 +1,19 @@
+let FSQLEditorParams = {
+    tables : {
+        users : {
+            name : null,
+            score : null,
+            birthDate : null
+        },
+        countries : {
+            name : null,
+            population : null,
+            size : null
+        }
+    }
+};
 function createFSQLEditor(textareaDom) {
+
     let res = CodeMirror.fromTextArea(textareaDom, {
             mode : "text/x-mariadb",
             indentWithTabs : true,
@@ -9,20 +24,7 @@ function createFSQLEditor(textareaDom) {
             extraKeys : {
                 "Ctrl-Space" : "autocomplete"
             },
-            hintOptions : {
-                tables : {
-                    users : {
-                        name : null,
-                        score : null,
-                        birthDate : null
-                    },
-                    countries : {
-                        name : null,
-                        population : null,
-                        size : null
-                    }
-                }
-            }
+            hintOptions : FSQLEditorParams
         });
     return res;
 }

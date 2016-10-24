@@ -43,7 +43,10 @@ guieditorApp.controller('flexsearchController', function($scope) {
     });
 
     conn.addListener("typeSystemReady", (types) => {
-        console.log(types);
+
+        FSQLEditorParams.tables = types.reduce(
+            (prev, curr) => {prev[curr] = {}; return prev},
+        {});
     });
     $scope.execute = function() {
         let sql = sqlEditor.getValue();
