@@ -7,6 +7,7 @@ guieditorApp.controller('flexsearchController', function($scope) {
     }
     let conn = settings.connection;
 
+
     //end to app level
     let fsql = new FSql(conn);
     let typeSystem = new TypeSystem(conn);
@@ -37,9 +38,12 @@ guieditorApp.controller('flexsearchController', function($scope) {
         let attributes = info.attributes;
         let list = attributes.filter((i) => {return ! i.collection}).map((i) => {return i.name});
         let sql = `select {pk} from {${info.name}} where {pk} = '${$scope.objPk}'`;
-        //$scope.objTable = list.map((i) => {return [{text: i}, {text: "value"}]});
         fsql.execute(sql, {fields: list.join(",")});
         $scope.$apply();
+    });
+
+    conn.addListener("typeSystemReady", (types) => {
+        console.log(types);
     });
     $scope.execute = function() {
         let sql = sqlEditor.getValue();
