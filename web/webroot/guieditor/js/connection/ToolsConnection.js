@@ -9,16 +9,23 @@ class ToolsConnection extends Observable {
     }
 
     init() {
-        let data = {query: "select {code} from {ComposedType}"};
         let url = this.fsqlUrl;
         $.ajax({
             url: url,
-            data: data
+            data: {query: "select {code} from {ComposedType}"}
         }).then((data) => {
             let table = this.convertFsqlResult(data);
             let types = table.data.map((row) => row[0].text);
             this.emit("typeSystemReady", types);
         });
+        $.ajax({
+            url: url,
+            data: {query: "SELECT {pk} FROM {CatalogVersion}"}
+        }).then((data) => {
+            let table = this.convertFsqlResult(data);
+            this.emit("catalogsReady", table.data);
+        });
+
     }
 
     get url () {

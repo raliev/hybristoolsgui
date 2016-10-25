@@ -1,15 +1,38 @@
+
 <div class="container">
     <p>
         <textarea id="fsqlField" ng-model="fsqlField" rows="7" class="fsql"></textarea>
     </p>
-    <p>
-        <button ng-click="execute()" type="button" class="btn btn-default">
-            Execute
-        </button>
-            <button type="button" class="pull-right btn btn-default" aria-label="History" data-toggle="modal" data-target="#historyModel">
+    <div class="middle-toolbar row">
+        <div class="col-md-1">
+            <button ng-click="execute()" type="button" class="pull-left btn btn-default">
+                Execute
+            </button>
+        </div>
+        <div class="col-md-1">
+            <div class="dropdown">
+                <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                    {{getCatalog()}} - {{getVersion()}}
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                    <li ng-repeat="cv in catalogsAndVersions" ng-click="$parent.selectCatalogVersion(cv[0].text, cv[1].text)">
+                        <a href="">
+                            <span>{{cv[0].text}} - {{cv[1].text}}</span>
+                        </a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-9">
+
+        </div>
+        <div class="col-md-1">
+            <button type="button" class="right-side pull-right btn btn-default" aria-label="History" data-toggle="modal" data-target="#historyModel">
                 <span class="glyphicon glyphicon-time" aria-hidden="true"></span> History
             </button>
-    </p>
+        </div>
+
+    </div>
     <!-- History modal dialog -->
     <div class="modal" id="historyModel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog" role="document">

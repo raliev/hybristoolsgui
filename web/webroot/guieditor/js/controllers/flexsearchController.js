@@ -43,11 +43,16 @@ guieditorApp.controller('flexsearchController', function($scope) {
     });
 
     conn.addListener("typeSystemReady", (types) => {
-
         FSQLEditorParams.tables = types.reduce(
             (prev, curr) => {prev[curr] = {}; return prev},
         {});
     });
+
+    conn.addListener("catalogsReady", (catalogsAndVersion) => {
+        $scope.catalogsAndVersions = catalogsAndVersion;
+        $scope.$apply();
+    });
+
     $scope.execute = function() {
         let sql = sqlEditor.getValue();
         Settings.instance.rememberSql(sql);
@@ -64,6 +69,18 @@ guieditorApp.controller('flexsearchController', function($scope) {
         sqlEditor.setValue(sql);
     }
 
+    $scope.catalog = null;
+    $scope.version = null;
+    $scope.getCatalog = function() {
+        return $scope.catalog == null ? "Dflt Catalog" : $scope.catalog;
+    }
+    $scope.getVersion = function() {
+        return $scope.version == null ? "Dflt Version" : $scope.version;
+    }
+    $scope.selectCatalogVersion = function(catalog, version) {
+        $scope.catalog = catalog;
+        $scope.version = version;
+    }
     $scope.fsqlField = "SELECT {pk} FROM {CMSSite}";
     $scope.headers = [];
     $scope.data = [];
