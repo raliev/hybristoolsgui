@@ -18,6 +18,7 @@ class ToolsConnection extends Observable {
             let types = table.data.map((row) => row[0].text);
             this.emit("typeSystemReady", types);
         });
+
         $.ajax({
             url: url,
             data: {query: "SELECT {pk} FROM {CatalogVersion}"}
@@ -26,6 +27,13 @@ class ToolsConnection extends Observable {
             this.emit("catalogsReady", table.data);
         });
 
+        $.ajax({
+            url: url,
+            data: {query: "SELECT {pk} FROM {Language}"}
+        }).then((data) => {
+            let table = this.convertFsqlResult(data);
+            this.emit("languagesReady", table.data);
+        });
     }
 
     get url () {

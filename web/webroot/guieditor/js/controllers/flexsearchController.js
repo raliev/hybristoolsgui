@@ -52,6 +52,10 @@ guieditorApp.controller('flexsearchController', function($scope) {
         $scope.catalogsAndVersions = catalogsAndVersion;
         $scope.$apply();
     });
+    conn.addListener("languagesReady", (languages) => {
+            $scope.languages = languages;
+            $scope.$apply();
+        });
 
     $scope.execute = function() {
         let sql = sqlEditor.getValue();
@@ -71,11 +75,15 @@ guieditorApp.controller('flexsearchController', function($scope) {
 
     $scope.catalog = null;
     $scope.version = null;
+    $scope.language = null;
     $scope.getCatalog = function() {
         return $scope.catalog == null ? "Dflt Catalog" : $scope.catalog;
     }
     $scope.getVersion = function() {
         return $scope.version == null ? "Dflt Version" : $scope.version;
+    }
+    $scope.getLanguage = function() {
+        return $scope.language == null ? "Dflt Lang" : $scope.language;
     }
     $scope.selectCatalogVersion = function(catalog, version) {
         $scope.catalog = catalog;

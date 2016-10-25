@@ -9,7 +9,7 @@
                 Execute
             </button>
         </div>
-        <div class="col-md-1">
+        <div class="col-md-3">
             <div class="dropdown">
                 <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                     {{getCatalog()}} - {{getVersion()}}
@@ -23,7 +23,21 @@
                 </ul>
             </div>
         </div>
-        <div class="col-md-9">
+        <div class="col-md-1">
+            <div class="dropdown">
+                <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                    {{getLanguage()}}
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                    <li ng-repeat="l in languages" ng-click="$parent.language = l[0].text">
+                        <a href="">
+                            <span>{{l[0].text}}</span>
+                        </a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-6">
 
         </div>
         <div class="col-md-1">
