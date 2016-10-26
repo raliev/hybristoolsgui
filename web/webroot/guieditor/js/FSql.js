@@ -13,6 +13,15 @@ class FSql extends Observable {
         if (params) {
             $.extend(data, params);
         }
+        if (! data.catalogName) {
+            delete data.catalogName;
+        }
+        if (! data.catalogVersion) {
+            delete data.catalogVersion;
+        }
+        if (! data.language) {
+            delete data.language;
+        }
         let url = this.con.fsqlUrl;
         $.ajax({
             url: url,

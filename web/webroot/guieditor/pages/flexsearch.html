@@ -5,7 +5,12 @@
     </p>
     <div class="middle-toolbar row">
         <div class="col-md-1">
-            <button ng-click="execute()" type="button" class="pull-left btn btn-default">
+            <button ng-click="execute()"
+                    data-execute-text="Loading..."
+                    data-success-text="Execute"
+                    data-error-text="Error"
+                    type="button"
+                    class="js-execute-btn pull-left btn btn-primary">
                 Execute
             </button>
         </div>

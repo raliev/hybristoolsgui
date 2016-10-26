@@ -16,6 +16,7 @@ guieditorApp.controller('flexsearchController', function($scope) {
         typeSystem.connection = c;
     });
     fsql.addListener("fsqlDone", (table, fsql, params) => {
+        $(".js-execute-btn").button("success");
         if (params && params.fields) {
             let objTable = [];
             for (let i = 0; i < table.headers.length; i++) {
@@ -58,9 +59,17 @@ guieditorApp.controller('flexsearchController', function($scope) {
         });
 
     $scope.execute = function() {
+        $scope.headers = [];
+        $scope.data = [];
         let sql = sqlEditor.getValue();
         Settings.instance.rememberSql(sql);
-        fsql.execute(sql);
+        $(".js-execute-btn").button("execute");
+
+        fsql.execute(sql, {
+            catalogName: $scope.catalog,
+            catalogVersion: $scope.version,
+            language: $scope.language
+        });
         $scope.history = settings.sqlHistory;
     }
 
