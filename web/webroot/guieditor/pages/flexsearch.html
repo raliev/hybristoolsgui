@@ -4,13 +4,15 @@
         <textarea id="fsqlField" ng-model="fsqlField" rows="7" class="fsql"></textarea>
     </p>
     <div class="middle-toolbar row">
-        <div class="col-md-1">
+        <div class="col-md-2">
+
             <button ng-click="execute()"
-                    data-execute-text="Loading..."
-                    data-success-text="Execute"
+                    data-execute-text='&lt;span class="glyphicon glyphicon-hourglass" aria-hidden="true"/&gt; Loading'
+                    data-success-text='&lt;span class="glyphicon glyphicon-play" aria-hidden="true"/&gt; Execute'
                     data-error-text="Error"
                     type="button"
                     class="js-execute-btn pull-left btn btn-primary">
+                <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
                 Execute
             </button>
         </div>
@@ -42,7 +44,7 @@
                 </ul>
             </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-5">
 
         </div>
         <div class="col-md-1">

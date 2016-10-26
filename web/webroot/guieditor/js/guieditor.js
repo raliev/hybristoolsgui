@@ -17,8 +17,6 @@ guieditorApp.config(function($routeProvider) {
 
 });
 
-
-
 guieditorApp.controller('contactController', function($scope) {
     $scope.message = 'Message from contact controller';
 });

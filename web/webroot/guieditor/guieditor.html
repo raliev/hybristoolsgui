@@ -24,6 +24,7 @@
     <script src="js/common.js"></script>
     <script src="js/fsqleditor.js"></script>
     <script src="js/guieditor.js"></script>
+    <script src="js/controllers/headerController.js"></script>
     <script src="js/controllers/flexsearchController.js"></script>
     <script src="js/controllers/connectionController.js"></script>
 
@@ -38,17 +39,17 @@
 <body>
 
 <!-- HEADER AND NAVBAR -->
-<header>
+<header ng-controller="headerController">
     <nav class="navbar navbar-default">
         <div class="container">
             <div class="navbar-header">
-                <a class="navbar-brand" href="/">Hybris tools gui</a>
+                <a class="navbar-brand" href="/">Hybris tools gui {{test}}</a>
             </div>
 
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="#/"><i class="fa fa-flexsearch"></i> Home</a></li>
-                <li><a href="#connection"><i class="fa fa-connection"></i>Connection</a></li>
-                <li><a href="#contact"><i class="fa fa-comment"></i> Contact</a></li>
+                <li ng-class="tab == 'sql' ? 'active' : ''"><a href="#/"><i class="fa fa-flexsearch"></i> Home</a></li>
+                <li ng-class="tab == 'connection' ? 'active' : ''"><a href="#connection"><i class="fa fa-connection"></i>Connection</a></li>
+                <li ng-class="tab == 'contact' ? 'active' : ''"><a href="#contact"><i class="fa fa-comment"></i> Contact</a></li>
             </ul>
         </div>
     </nav>
