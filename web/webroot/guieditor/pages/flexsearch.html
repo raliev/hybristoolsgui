@@ -3,38 +3,34 @@
     <p>
         <textarea id="fsqlField" ng-model="fsqlField" rows="7" class="fsql"></textarea>
     </p>
-    <div class="middle-toolbar row">
-        <div class="col-md-2">
-
-            <button ng-click="execute()"
-                    data-execute-text='&lt;span class="glyphicon glyphicon-hourglass" aria-hidden="true"/&gt; Loading'
-                    data-success-text='&lt;span class="glyphicon glyphicon-play" aria-hidden="true"/&gt; Execute'
-                    data-error-text="Error"
-                    type="button"
-                    class="js-execute-btn pull-left btn btn-primary">
-                <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
-                Execute
-            </button>
-        </div>
-        <div class="col-md-3">
-            <div class="dropdown">
-                <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                    {{getCatalog()}} - {{getVersion()}}
-                    <span class="caret"></span>
+    <!-- Search box Start -->
+    <form>
+        <div class="well carousel-search">
+            <div class="btn-group">
+                <button ng-click="execute()"
+                        data-execute-text='&lt;span class="glyphicon glyphicon-hourglass" aria-hidden="true"/&gt; Loading'
+                        data-success-text='&lt;span class="glyphicon glyphicon-play" aria-hidden="true"/&gt; Execute'
+                        data-error-text="Error"
+                        type="button"
+                        class="js-execute-btn pull-left btn btn-primary">
+                    <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
+                    Execute
                 </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+            </div>
+            <div class="btn-group">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {{getCatalog()}} - {{getVersion()}}<span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
                     <li ng-repeat="cv in catalogsAndVersions" ng-click="$parent.selectCatalogVersion(cv[0].text, cv[1].text)">
                         <a href="">
                             <span>{{cv[0].text}} - {{cv[1].text}}</span>
                         </a></li>
                 </ul>
             </div>
-        </div>
-        <div class="col-md-1">
-            <div class="dropdown">
-                <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                    {{getLanguage()}}
-                    <span class="caret"></span>
+            <div class="btn-group">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {{getLanguage()}}<span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
                     <li ng-repeat="l in languages" ng-click="$parent.language = l[0].text">
@@ -43,17 +39,12 @@
                         </a></li>
                 </ul>
             </div>
-        </div>
-        <div class="col-md-5">
-
-        </div>
-        <div class="col-md-1">
             <button type="button" class="right-side pull-right btn btn-default" aria-label="History" data-toggle="modal" data-target="#historyModel">
                 <span class="glyphicon glyphicon-time" aria-hidden="true"></span> History
             </button>
         </div>
-
-    </div>
+    </form>
+   
     <!-- History modal dialog -->
     <div class="modal" id="historyModel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog" role="document">
