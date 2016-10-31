@@ -75,11 +75,12 @@
 	
 	     ${ear.path}: 			path to ear
 	 -->
-	<macrodef name="hybristoolsgui_before_ear">
+	<macrodef name="hybristoolsgui_after_build">
 		<sequential>
-
-			<!-- you can do anything before the EAR file is being packed -->
-			
+			<echo message="*** Install NPM packages *** "/>
+			<exec executable="npm" dir="web/webroot/guieditor">
+				<arg value="install"/>
+			</exec>
 		</sequential>
 	</macrodef>
 		

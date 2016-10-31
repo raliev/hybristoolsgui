@@ -1,6 +1,9 @@
 class Settings extends Observable {
     constructor() {
         super();
+        this.sqlHistory = null;
+        this.lastSql = null;
+        this.maxSqlHistory = 10;
         this.load();
         this.init();
     }
@@ -16,6 +19,9 @@ class Settings extends Observable {
         }
         if (! this.lastSql) {
             this.lastSql = "SELECT {pk} FROM {CMSSite}";
+        }
+        if (! this.sqlHistory) {
+            this.sqlHistory = [];
         }
     }
 
@@ -45,6 +51,7 @@ class Settings extends Observable {
         }
         store.set("defaultConnectionSettings", this.defaultConnectionSettings);
         store.set("lastSql", this.lastSql);
+        store.set("sqlHistory", this.sqlHistory);
     }
 
     load() {
@@ -52,7 +59,7 @@ class Settings extends Observable {
             console.error("no local storage");
             return;
         }
-        let toApply = ["defaultConnectionSettings", "lastSql"];
+        let toApply = ["defaultConnectionSettings", "lastSql", "sqlHistory"];
         toApply.forEach((prop) => {
             let v = store.get(prop);
             if (v) {
@@ -63,6 +70,12 @@ class Settings extends Observable {
 
     rememberSql(sql) {
         this.lastSql = sql;
+        if (this.sqlHistory.indexOf(sql) == -1) {
+            this.sqlHistory.push(sql);
+            if (this.sqlHistory.length > this.maxSqlHistory) {
+                this.sqlHistory.splice(0, 1);
+            }
+        }
         this.save("lastSql");
     }
 

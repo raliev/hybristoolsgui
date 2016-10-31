@@ -7,6 +7,7 @@ guieditorApp.controller('flexsearchController', function($scope) {
     }
     let conn = settings.connection;
 
+
     //end to app level
     let fsql = new FSql(conn);
     let typeSystem = new TypeSystem(conn);
@@ -15,6 +16,7 @@ guieditorApp.controller('flexsearchController', function($scope) {
         typeSystem.connection = c;
     });
     fsql.addListener("fsqlDone", (table, fsql, params) => {
+        $(".js-execute-btn").button("success");
         if (params && params.fields) {
             let objTable = [];
             for (let i = 0; i < table.headers.length; i++) {
@@ -24,6 +26,7 @@ guieditorApp.controller('flexsearchController', function($scope) {
         } else {
             $scope.headers = table.headers;
             $scope.data = table.data;
+            $scope.textareaResults = getPlainTxt(table.headers, table.data);
         }
         $scope.$apply();
     });
@@ -36,22 +39,67 @@ guieditorApp.controller('flexsearchController', function($scope) {
         let attributes = info.attributes;
         let list = attributes.filter((i) => {return ! i.collection}).map((i) => {return i.name});
         let sql = `select {pk} from {${info.name}} where {pk} = '${$scope.objPk}'`;
-        //$scope.objTable = list.map((i) => {return [{text: i}, {text: "value"}]});
         fsql.execute(sql, {fields: list.join(",")});
         $scope.$apply();
     });
-    $scope.fsqlField = "SELECT {pk} FROM {CMSSite}";
-    $scope.headers = [];
-    $scope.data = [];
+
+    conn.addListener("typeSystemReady", (types) => {
+        FSQLEditorParams.tables = types.reduce(
+            (prev, curr) => {prev[curr] = {}; return prev},
+        {});
+    });
+
+    conn.addListener("catalogsReady", (catalogsAndVersion) => {
+        $scope.catalogsAndVersions = catalogsAndVersion;
+        $scope.$apply();
+    });
+    conn.addListener("languagesReady", (languages) => {
+            $scope.languages = languages;
+            $scope.$apply();
+        });
 
     $scope.execute = function() {
+        $scope.headers = [];
+        $scope.data = [];
         let sql = sqlEditor.getValue();
         Settings.instance.rememberSql(sql);
-        fsql.execute(sql);
+        $(".js-execute-btn").button("execute");
+
+        fsql.execute(sql, {
+            catalogName: $scope.catalog,
+            catalogVersion: $scope.version,
+            language: $scope.language
+        });
+        $scope.history = settings.sqlHistory;
     }
 
     $scope.openObject = function(pk) {
         $scope.objPk = pk;
         typeSystem.getType(pk);
     }
+
+    $scope.setFSql = function(sql) {
+        sqlEditor.setValue(sql);
+    }
+
+    $scope.catalog = null;
+    $scope.version = null;
+    $scope.language = null;
+    $scope.getCatalog = function() {
+        return $scope.catalog == null ? "Dflt Catalog" : $scope.catalog;
+    }
+    $scope.getVersion = function() {
+        return $scope.version == null ? "Dflt Version" : $scope.version;
+    }
+    $scope.getLanguage = function() {
+        return $scope.language == null ? "Dflt Lang" : $scope.language;
+    }
+    $scope.selectCatalogVersion = function(catalog, version) {
+        $scope.catalog = catalog;
+        $scope.version = version;
+    }
+    $scope.fsqlField = "SELECT {pk} FROM {CMSSite}";
+    $scope.headers = [];
+    $scope.data = [];
+    $scope.history = settings.sqlHistory.concat();
 });

@@ -1,0 +1,3 @@
+web/webroot/guieditor/node_modules/**
+classes/**
+gensrc/**

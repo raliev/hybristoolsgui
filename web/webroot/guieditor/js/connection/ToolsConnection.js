@@ -1,6 +1,39 @@
-class ToolsConnection {
+/**
+ * @event typeSystemReady
+ **/
+class ToolsConnection extends Observable {
     constructor(cfg) {
+        super();
         this._url = cfg.url;
+        this.init();
+    }
+
+    init() {
+        let url = this.fsqlUrl;
+        $.ajax({
+            url: url,
+            data: {query: "select {code} from {ComposedType}"}
+        }).then((data) => {
+            let table = this.convertFsqlResult(data);
+            let types = table.data.map((row) => row[0].text);
+            this.emit("typeSystemReady", types);
+        });
+
+        $.ajax({
+            url: url,
+            data: {query: "SELECT {pk} FROM {CatalogVersion}"}
+        }).then((data) => {
+            let table = this.convertFsqlResult(data);
+            this.emit("catalogsReady", table.data);
+        });
+
+        $.ajax({
+            url: url,
+            data: {query: "SELECT {pk} FROM {Language}"}
+        }).then((data) => {
+            let table = this.convertFsqlResult(data);
+            this.emit("languagesReady", table.data);
+        });
     }
 
     get url () {

@@ -1,26 +1,88 @@
+
 <div class="container">
     <p>
         <textarea id="fsqlField" ng-model="fsqlField" rows="7" class="fsql"></textarea>
     </p>
-    <p>
-        <button ng-click="execute()" type="button" class="btn btn-default">
-            Execute
-        </button>
-    </p>
+    <!-- Search box Start -->
+    <form>
+        <div class="well carousel-search">
+            <div class="btn-group">
+                <button ng-click="execute()"
+                        data-execute-text='&lt;span class="glyphicon glyphicon-hourglass" aria-hidden="true"/&gt; Loading'
+                        data-success-text='&lt;span class="glyphicon glyphicon-play" aria-hidden="true"/&gt; Execute'
+                        data-error-text="Error"
+                        type="button"
+                        class="js-execute-btn pull-left btn btn-primary">
+                    <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
+                    Execute
+                </button>
+            </div>
+            <div class="btn-group">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {{getCatalog()}} - {{getVersion()}}<span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li ng-repeat="cv in catalogsAndVersions" ng-click="$parent.selectCatalogVersion(cv[0].text, cv[1].text)">
+                        <a href="">
+                            <span>{{cv[0].text}} - {{cv[1].text}}</span>
+                        </a></li>
+                </ul>
+            </div>
+            <div class="btn-group">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {{getLanguage()}}<span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                    <li ng-repeat="l in languages" ng-click="$parent.language = l[0].text">
+                        <a href="">
+                            <span>{{l[0].text}}</span>
+                        </a></li>
+                </ul>
+            </div>
+            <button type="button" class="right-side pull-right btn btn-default" aria-label="History" data-toggle="modal" data-target="#historyModel">
+                <span class="glyphicon glyphicon-time" aria-hidden="true"></span> History
+            </button>
+        </div>
+    </form>
+   
+    <!-- History modal dialog -->
+    <div class="modal" id="historyModel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">FSQL History</h4>
+                </div>
+                <div class="modal-body" >
+                    <ul class="fsql-history-list list-group" ng-repeat="h in history track by $index" data-dismiss="modal" ng-click="setFSql(h)">
+                        <li class="list-group-item">{{h}}</li>
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="row">
         <div class="col-md-7">
-            <div class="panel panel-primary">
-                <div class="panel-heading">FS results</div>
-
-                <table class="panel-body table">
-                    <thead>
-                    <tr>
-                        <th ng-repeat="h in headers">{{h.caption}}</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr ng-repeat="r in data">
-                        <td ng-repeat="c in r">
+            <div class="fsql-results panel panel-primary" ng-init="resultsMode = 'table'">
+                <div class="panel-heading fsql-results-toolbar">
+                    <span>FS results</span>
+                    <button ng-click="resultsMode = resultsMode == 'table' ? 'txt' : 'table'"
+                            type="button" class="btn btn-default btn-xs">
+                        {{resultsMode}}</button>
+                </div>
+                <div class="panel-body" ng-class="{'table-results': resultsMode == 'table', 'textarea-results': resultsMode == 'txt'}">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th ng-repeat="h in headers">{{h.caption}}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="r in data">
+                            <td ng-repeat="c in r">
                             <span ng-switch on="c.type">
                                 <span ng-switch-when="pk" >
                                     <span ng-click="openObject(c.text)" class="pk-link glyphicon glyphicon-info-sign"></span>
@@ -31,10 +93,12 @@
                                 </span>
                             </span>
 
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <textarea rows="10" class="results">{{textareaResults}}</textarea>
+                </div>
             </div>
         </div>
         <div class="col-md-5">
@@ -44,7 +108,7 @@
                     <tbody>
                     <tr ng-repeat="r in objTable">
                         <td ng-repeat="c in r">
-                            {{c.text}}
+                            <p>{{c.text}}</p>
                         </td>
                     </tr>
                     </tbody>
