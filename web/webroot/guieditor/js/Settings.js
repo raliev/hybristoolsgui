@@ -3,6 +3,7 @@ class Settings extends Observable {
         super();
         this.sqlHistory = null;
         this.lastSql = null;
+        this.refResolving = null;
         this.maxSqlHistory = 10;
         this.load();
         this.init();
@@ -22,6 +23,9 @@ class Settings extends Observable {
         }
         if (! this.sqlHistory) {
             this.sqlHistory = [];
+        }
+        if (! this.refResolving) {
+            this.refResolving = ["Category:code,name", "Media:code"];
         }
     }
 
@@ -52,6 +56,7 @@ class Settings extends Observable {
         store.set("defaultConnectionSettings", this.defaultConnectionSettings);
         store.set("lastSql", this.lastSql);
         store.set("sqlHistory", this.sqlHistory);
+        store.set("refResolving", this.refResolving);
     }
 
     load() {
@@ -59,7 +64,7 @@ class Settings extends Observable {
             console.error("no local storage");
             return;
         }
-        let toApply = ["defaultConnectionSettings", "lastSql", "sqlHistory"];
+        let toApply = ["defaultConnectionSettings", "lastSql", "sqlHistory", "refResolving"];
         toApply.forEach((prop) => {
             let v = store.get(prop);
             if (v) {

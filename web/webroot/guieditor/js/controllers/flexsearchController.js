@@ -65,11 +65,15 @@ guieditorApp.controller('flexsearchController', function($scope) {
         Settings.instance.rememberSql(sql);
         $(".js-execute-btn").button("execute");
 
-        fsql.execute(sql, {
+        let params = {
             catalogName: $scope.catalog,
             catalogVersion: $scope.version,
             language: $scope.language
-        });
+        };
+        if (settings.refResolving && settings.refResolving.length) {
+            params.ref = settings.refResolving.join(" ");
+        }
+        fsql.execute(sql, params);
         $scope.history = settings.sqlHistory;
     }
 
@@ -102,4 +106,15 @@ guieditorApp.controller('flexsearchController', function($scope) {
     $scope.headers = [];
     $scope.data = [];
     $scope.history = settings.sqlHistory.concat();
+    $scope.refResolving = settings.refResolving;
+    $scope.removeRefResolving = function(idx) {
+        $scope.refResolving.splice(idx, 1);
+    }
+    $scope.addRefResolving = function() {
+        $scope.refResolving.push("");
+    }
+    $scope.saveSettings = function() {
+        settings.save();
+    }
+
 });
