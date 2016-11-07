@@ -1,9 +1,13 @@
 class ConnectionFactory {
     constructor() {
         this._drivers = {
-            "hybristools":  {
+            "htools":  {
                 cls: ToolsConnection,
                 params: ["url"]
+            },
+            "hac": {
+                cls: HACConnection,
+                params: ["url", "login", "password", "user"]
             }
         }
     }

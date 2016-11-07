@@ -6,16 +6,16 @@ guieditorApp.controller('flexsearchController', function($scope) {
         sqlEditor.setValue(settings.lastSql);
     }
     let conn = settings.connection;
+    conn.connect();
 
 
     //end to app level
-    let fsql = new FSql(conn);
     let typeSystem = new TypeSystem(conn);
     settings.addListener("reconnect", (c) => {
-        fsql.connection = c;
         typeSystem.connection = c;
+        c.connect();
     });
-    fsql.addListener("fsqlDone", (table, fsql, params) => {
+    conn.addListener("fsqlDone", (table, fsql, params) => {
         $(".js-execute-btn").button("success");
         if (params && params.fields) {
             let objTable = [];
@@ -23,6 +23,7 @@ guieditorApp.controller('flexsearchController', function($scope) {
                 objTable.push([{text: table.headers[i].caption}, table.data[0][i]]);
             }
             $scope.objTable = objTable;
+            $scope.showObjectPanel = true;
         } else {
             $scope.headers = table.headers;
             $scope.data = table.data;
@@ -36,10 +37,11 @@ guieditorApp.controller('flexsearchController', function($scope) {
         $scope.$apply();
     });
     typeSystem.addListener("typeInfoDone", (info) => {
+        $scope.showObjectPanel = true;
         let attributes = info.attributes;
         let list = attributes.filter((i) => {return ! i.collection}).map((i) => {return i.name});
         let sql = `select {pk} from {${info.name}} where {pk} = '${$scope.objPk}'`;
-        fsql.execute(sql, {fields: list.join(",")});
+        conn.execute(sql, {fields: list.join(",")});
         $scope.$apply();
     });
 
@@ -73,7 +75,7 @@ guieditorApp.controller('flexsearchController', function($scope) {
         if (settings.refResolving && settings.refResolving.length) {
             params.ref = settings.refResolving.join(" ");
         }
-        fsql.execute(sql, params);
+        conn.execute(sql, params);
         $scope.history = settings.sqlHistory;
     }
 
@@ -103,6 +105,7 @@ guieditorApp.controller('flexsearchController', function($scope) {
         $scope.version = version;
     }
     $scope.fsqlField = "SELECT {pk} FROM {CMSSite}";
+    $scope.showObjectPanel = false;
     $scope.headers = [];
     $scope.data = [];
     $scope.history = settings.sqlHistory.concat();

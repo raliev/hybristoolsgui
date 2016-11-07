@@ -2,12 +2,46 @@
     <h1>Connection settings</h1>
     <form>
         <div class="form-group">
+            <label>Type</label>
+            <label class="radio-inline" ng-click="changeType()">
+                <input type="radio" ng-model="type" value="htools">
+                Hybris Tools
+            </label>
+            <label class="radio-inline" ng-click="changeType()">
+                <input type="radio" ng-model="type" value="hac">
+                HAC
+            </label>
+        </div>
+        <div class="form-group">
             <label>Connection point</label>
             <div class="setting-url input-group">
                 <span class="input-group-addon" id="basic-addon1">URL</span>
-                <input ng-model="url" type="text" class="form-control" placeholder="URL" aria-describedby="basic-addon1"/>
+                <input ng-model="currConfig.url" type="text" class="form-control" placeholder="URL" aria-describedby="basic-addon1"/>
             </div>
         </div>
+        <div class="form-group" ng-style="{'display': type == 'hac'?'block':'none'}">
+            <label>Credentials</label>
+            <div class="setting-url input-group">
+                <span class="input-group-addon" id="basic-addon1">Login</span>
+                <input ng-model="currConfig.login" type="text" class="form-control" placeholder="URL" aria-describedby="basic-addon1"/>
+            </div>
+        </div>
+        <div class="form-group" ng-style="{'display': type == 'hac'?'block':'none'}">
+            <div class="setting-url input-group">
+                <span class="input-group-addon" id="basic-addon1">Password</span>
+                <input ng-model="currConfig.password" type="password" class="form-control" placeholder="URL" aria-describedby="basic-addon1"/>
+            </div>
+        </div>
+        <div class="form-group" ng-style="{'display': type == 'hac'?'block':'none'}">
+            <label>Working user</label>
+            <div class="setting-url input-group">
+                <span class="input-group-addon" id="basic-addon1">Password</span>
+                <input ng-model="currConfig.user" type="text" class="form-control" placeholder="URL" aria-describedby="basic-addon1"/>
+            </div>
+        </div>
+
+
+
         <button ng-click="test()" type="button"
                 data-testing-text="Connecting..."
                 data-success-text="Success!"

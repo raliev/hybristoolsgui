@@ -1,12 +1,36 @@
 guieditorApp.controller('connectionController', function($scope) {
-    $scope.url = Settings.instance.connection.params.url;
+    let cs = Settings.instance.defaultConnectionSettings;
+    let htoolsUrl = "https://localhost:9002/tools";
+    let hacUrl = "https://localhost:9002/hac";
+    let htoolsDefCfg = {
+        url: "https://server1:9002/tools",
+        type: "htools"
+    }
+    let hacDefCfg = {
+        url: "https://server2:9002/hac",
+        type: "htools",
+        login: "admin",
+        password: "nimda",
+        user: "admin"
+    }
+    let configs = {
+        "hac": hacDefCfg,
+        "htools": htoolsDefCfg
+    }
+    if (cs) {
+        $scope.type = cs.type;
+    } else {
+        $scope.type = "htools";
+    }
+    $scope.currConfig = configs[$scope.type];
+    if (cs) {
+        $.extend($scope.currConfig, cs.params);
+    }
 
     let constructProperties = function() {
         return {
-            type: "hybristools",
-            params: {
-                url: $scope.url,
-            }
+            type: $scope.type,
+            params: $scope.currConfig
         }
     }
 
@@ -28,5 +52,9 @@ guieditorApp.controller('connectionController', function($scope) {
         Settings.instance.defaultConnectionSettings = p;
         Settings.instance.connection = con;
         Settings.instance.save();
+    }
+
+    $scope.changeType = function() {
+        $scope.currConfig = configs[$scope.type];
     }
 });

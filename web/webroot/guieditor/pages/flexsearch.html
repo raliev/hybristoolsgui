@@ -95,7 +95,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-md-7">
+        <div ng-class="{'col-md-7': showObjectPanel, 'col-md-12': !showObjectPanel}">
             <div class="fsql-results panel panel-primary" ng-init="resultsMode = 'table'">
                 <div class="panel-heading fsql-results-toolbar">
                     <span>FS results</span>
@@ -131,7 +131,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-5">
+        <div class="col-md-5" ng-style="{'display': (showObjectPanel ? 'block' : 'none')}">
             <div class="panel panel-default">
                 <div class="panel-heading">Type: {{objType}} (pk: {{objPk}})</div>
                 <table class="panel-body table">

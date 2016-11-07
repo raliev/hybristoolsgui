@@ -20,6 +20,9 @@ textarea.results {
 .fsql-history-list li {
     cursor: pointer;
 }
+.fsql-results {
+    overflow: auto;
+}
 .fsql-results .table-results textarea.results {
     display: none;
 }

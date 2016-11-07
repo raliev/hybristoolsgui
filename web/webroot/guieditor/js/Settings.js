@@ -12,7 +12,7 @@ class Settings extends Observable {
     init() {
         if (! this.defaultConnectionSettings) {
             this.defaultConnectionSettings = {
-                type: "hybristools",
+                type: "htools",
                 params: {
                     url: "https://localhost:9002/tools"
                 }
@@ -43,7 +43,9 @@ class Settings extends Observable {
     }
 
     set connection (c) {
-        this._con.close();
+        if (this._con) {
+            this._con.close();
+        }
         this._con = c;
         this.emit("reconnect", c);
     }
