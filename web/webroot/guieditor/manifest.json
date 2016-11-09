@@ -1,0 +1,12 @@
+{
+  "name": "Hybris tools gui",
+  "description": "Allows to run flexible search.",
+  "version": "0.1",
+  "manifest_version": 2,
+  "app": {
+    "background": {
+      "scripts": ["chrome_background.js"]
+    }
+  },
+  "icons": { "16": "img/hybrisgui-16.png", "128": "img/hybrisgui-128.png" }
+}
