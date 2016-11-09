@@ -1,11 +1,47 @@
 class Settings extends Observable {
     constructor() {
         super();
+        if (chrome && chrome.storage) {
+            this.storage = {
+                set: function(key, value) {
+                    let o = {};
+                    o[key] = value;
+                    chrome.storage.sync.set(o);
+                },
+                get: function(key, fn) {
+                    chrome.storage.sync.get(key, fn);
+                },
+                getAll: function(keys, fn) {
+                    chrome.storage.sync.get(key, fn);
+                }
+                enabled: true
+            };
+        } else {
+            this.storage = {
+                set: function(key, value) {
+                    store[key] = value;
+                },
+
+                get: function(key, fn) {
+                    fn(store[key]);
+                },
+
+                getAll: function(keys, fn) {
+                    let result = {};
+                    keys.forEach((k) -> {
+                        resuls[k] = store[k];
+                    });
+                    fn(result);
+                },
+
+                enabled: true
+            }
+
+        }
         this.sqlHistory = null;
         this.lastSql = null;
         this.refResolving = null;
         this.maxSqlHistory = 10;
-        this.load();
         this.init();
     }
 
@@ -51,24 +87,36 @@ class Settings extends Observable {
     }
 
     save() {
-        if (! store.enabled) {
+        if (! this.storage.enabled) {
             console.error("no local storage");
             return;
         }
-        store.set("defaultConnectionSettings", this.defaultConnectionSettings);
-        store.set("lastSql", this.lastSql);
-        store.set("sqlHistory", this.sqlHistory);
-        store.set("refResolving", this.refResolving);
+        this.storage.set("defaultConnectionSettings", this.defaultConnectionSettings);
+        this.storage.set("lastSql", this.lastSql);
+        this.storage.set("sqlHistory", this.sqlHistory);
+        this.storage.set("refResolving", this.refResolving);
     }
 
-    load() {
-        if (! store.enabled) {
+    loadPromise() {
+        return new Promise((resolve, reject) -> {
+                this.storage.getAll(["defaultConnectionSettings", "lastSql", "sqlHistory", "refResolving"], (vObj) -> {
+                    for (k in vObj) {
+                        this[k] = vObj[k];
+                    }
+                    resolve();
+                });
+            }
+        );
+    },
+
+    load_deprecated() {
+        if (! this.storage.enabled) {
             console.error("no local storage");
             return;
         }
         let toApply = ["defaultConnectionSettings", "lastSql", "sqlHistory", "refResolving"];
         toApply.forEach((prop) => {
-            let v = store.get(prop);
+            let v = this.storage.get(prop);
             if (v) {
                 this[prop] = v;
             }
