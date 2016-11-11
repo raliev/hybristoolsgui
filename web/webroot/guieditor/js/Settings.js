@@ -12,8 +12,8 @@ class Settings extends Observable {
                     chrome.storage.sync.get(key, fn);
                 },
                 getAll: function(keys, fn) {
-                    chrome.storage.sync.get(key, fn);
-                }
+                    chrome.storage.sync.get(keys, fn);
+                },
                 enabled: true
             };
         } else {
@@ -28,8 +28,9 @@ class Settings extends Observable {
 
                 getAll: function(keys, fn) {
                     let result = {};
-                    keys.forEach((k) -> {
-                        resuls[k] = store[k];
+                    keys.forEach((k) => {
+                        let stored = store.get(k);
+                        result[k] = stored;
                     });
                     fn(result);
                 },
@@ -47,12 +48,7 @@ class Settings extends Observable {
 
     init() {
         if (! this.defaultConnectionSettings) {
-            this.defaultConnectionSettings = {
-                type: "htools",
-                params: {
-                    url: "https://localhost:9002/tools"
-                }
-            };
+            this.defaultConnectionSettings = Settings.DEFAULT_CONNECTION_SETTINGS;
         }
         if (! this.lastSql) {
             this.lastSql = "SELECT {pk} FROM {CMSSite}";
@@ -72,7 +68,12 @@ class Settings extends Observable {
     get connection() {
         if (! this._con) {
             let cf = new ConnectionFactory()
-            let con = cf.constructConnection(this.defaultConnectionSettings);
+            let con;
+            try {
+                con = cf.constructConnection(this.defaultConnectionSettings);
+            } catch (e) {
+                con = cf.constructConnection(Settings.DEFAULT_CONNECTION_SETTINGS);
+            }
             this._con = con;
         }
         return this._con;
@@ -98,16 +99,16 @@ class Settings extends Observable {
     }
 
     loadPromise() {
-        return new Promise((resolve, reject) -> {
-                this.storage.getAll(["defaultConnectionSettings", "lastSql", "sqlHistory", "refResolving"], (vObj) -> {
-                    for (k in vObj) {
+        return new Promise((resolve, reject) => {
+                this.storage.getAll(["defaultConnectionSettings", "lastSql", "sqlHistory", "refResolving"], (vObj) => {
+                    for (let k in vObj) {
                         this[k] = vObj[k];
                     }
                     resolve();
                 });
             }
         );
-    },
+    }
 
     load_deprecated() {
         if (! this.storage.enabled) {
@@ -139,6 +140,15 @@ class Settings extends Observable {
             this._instance = new Settings()
         }
         return this._instance;
+    }
+
+    static get DEFAULT_CONNECTION_SETTINGS() {
+        return {
+           type: "htools",
+           params: {
+               url: "https://localhost:9002/tools"
+           }
+        };
     }
 }
 

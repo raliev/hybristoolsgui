@@ -16,6 +16,7 @@ class HACConnection extends Observable {
 
     reportError(er) {
         console.error(er);
+        this.emit("connectionError");
     }
 
     init() {
@@ -66,7 +67,14 @@ var url = "https://localhost:9002/hac";
             }
         }
 
-        loadLogin().then(doLogin).then(checkLoginCorrect);
+        loadLogin().then(doLogin).then(checkLoginCorrect).catch((data) => {
+            if (data && data.status == 404) {
+                this.reportError("No page found. Doublecheck URL provided, make sure that HAC login form is opened at URL/login.jsp.");
+            } else {
+                this.emit("connectionError");
+            }
+
+        });
     }
 
 
