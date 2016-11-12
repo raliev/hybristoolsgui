@@ -1,5 +1,4 @@
 guieditorApp.controller('headerController', function($scope) {
-    $scope.test = "hi";
     $scope.$on('$routeChangeSuccess', function(ev, current, previous) {
         switch(current.loadedTemplateUrl) {
             case "pages/contact.html":

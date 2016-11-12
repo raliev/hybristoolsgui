@@ -78,7 +78,7 @@
 	<macrodef name="hybristoolsgui_after_build">
 		<sequential>
 			<echo message="*** Install NPM packages *** "/>
-			<exec executable="npm" dir="web/webroot/guieditor">
+			<exec executable="npm" dir="${ext.hybristoolsgui.path}/web/webroot/guieditor">
 				<arg value="install"/>
 			</exec>
 		</sequential>

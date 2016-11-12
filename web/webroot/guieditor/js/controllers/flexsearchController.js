@@ -6,16 +6,15 @@ guieditorApp.controller('flexsearchController', function($scope) {
         sqlEditor.setValue(settings.lastSql);
     }
     let conn = settings.connection;
-
+    conn.connect();
 
     //end to app level
-    let fsql = new FSql(conn);
     let typeSystem = new TypeSystem(conn);
     settings.addListener("reconnect", (c) => {
-        fsql.connection = c;
         typeSystem.connection = c;
+        c.connect();
     });
-    fsql.addListener("fsqlDone", (table, fsql, params) => {
+    conn.addListener("fsqlDone", (table, fsql, params) => {
         $(".js-execute-btn").button("success");
         if (params && params.fields) {
             let objTable = [];
@@ -23,6 +22,7 @@ guieditorApp.controller('flexsearchController', function($scope) {
                 objTable.push([{text: table.headers[i].caption}, table.data[0][i]]);
             }
             $scope.objTable = objTable;
+            $scope.showObjectPanel = true;
         } else {
             $scope.headers = table.headers;
             $scope.data = table.data;
@@ -36,10 +36,11 @@ guieditorApp.controller('flexsearchController', function($scope) {
         $scope.$apply();
     });
     typeSystem.addListener("typeInfoDone", (info) => {
+        $scope.showObjectPanel = true;
         let attributes = info.attributes;
         let list = attributes.filter((i) => {return ! i.collection}).map((i) => {return i.name});
         let sql = `select {pk} from {${info.name}} where {pk} = '${$scope.objPk}'`;
-        fsql.execute(sql, {fields: list.join(",")});
+        conn.execute(sql, {fields: list.join(",")});
         $scope.$apply();
     });
 
@@ -56,7 +57,7 @@ guieditorApp.controller('flexsearchController', function($scope) {
     conn.addListener("languagesReady", (languages) => {
             $scope.languages = languages;
             $scope.$apply();
-        });
+    });
 
     $scope.execute = function() {
         $scope.headers = [];
@@ -65,11 +66,15 @@ guieditorApp.controller('flexsearchController', function($scope) {
         Settings.instance.rememberSql(sql);
         $(".js-execute-btn").button("execute");
 
-        fsql.execute(sql, {
+        let params = {
             catalogName: $scope.catalog,
             catalogVersion: $scope.version,
             language: $scope.language
-        });
+        };
+        if (settings.refResolving && settings.refResolving.length) {
+            params.ref = settings.refResolving.join(" ");
+        }
+        conn.execute(sql, params);
         $scope.history = settings.sqlHistory;
     }
 
@@ -99,7 +104,18 @@ guieditorApp.controller('flexsearchController', function($scope) {
         $scope.version = version;
     }
     $scope.fsqlField = "SELECT {pk} FROM {CMSSite}";
+    $scope.showObjectPanel = false;
     $scope.headers = [];
     $scope.data = [];
     $scope.history = settings.sqlHistory.concat();
+    $scope.refResolving = settings.refResolving;
+    $scope.removeRefResolving = function(idx) {
+        $scope.refResolving.splice(idx, 1);
+    }
+    $scope.addRefResolving = function() {
+        $scope.refResolving.push("");
+    }
+    $scope.saveSettings = function() {
+        settings.save();
+    }
 });

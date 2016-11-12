@@ -39,14 +39,44 @@
                         </a></li>
                 </ul>
             </div>
-            <button type="button" class="right-side pull-right btn btn-default" aria-label="History" data-toggle="modal" data-target="#historyModel">
+            <button type="button" class="btn btn-default" aria-label="Ref Resolving" data-toggle="modal" data-target="#refResolvingModal">
+                Ref resolving
+            </button>
+
+            <button type="button" class="right-side pull-right btn btn-default" aria-label="History" data-toggle="modal" data-target="#historyModal">
                 <span class="glyphicon glyphicon-time" aria-hidden="true"></span> History
             </button>
         </div>
     </form>
-   
+
+    <!-- Reference resolving dialog -->
+    <div class="modal" id="refResolvingModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" ng-click="saveSettings()" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Reference resolving</h4>
+                </div>
+                <div class="modal-body">
+                    <form>
+                    <ul class="ref-resolving-list list-group" ng-repeat="rr in refResolving track by $index">
+                        <li class="list-group-item">
+                            <input type="form-control" ng-model="refResolving[$index]"/>
+                            <span class="glyphicon glyphicon-remove" aria-hidden="true" ng-click="removeRefResolving($index)"></span>
+                        </li>
+                    </ul>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" ng-click="addRefResolving()">Add</button>
+                    <button type="button" class="btn btn-default" ng-click="saveSettings()" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- History modal dialog -->
-    <div class="modal" id="historyModel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal" id="historyModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -65,7 +95,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-md-7">
+        <div ng-class="{'col-md-7': showObjectPanel, 'col-md-12': !showObjectPanel}">
             <div class="fsql-results panel panel-primary" ng-init="resultsMode = 'table'">
                 <div class="panel-heading fsql-results-toolbar">
                     <span>FS results</span>
@@ -101,7 +131,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-5">
+        <div class="col-md-5" ng-style="{'display': (showObjectPanel ? 'block' : 'none')}">
             <div class="panel panel-default">
                 <div class="panel-heading">Type: {{objType}} (pk: {{objPk}})</div>
                 <table class="panel-body table">

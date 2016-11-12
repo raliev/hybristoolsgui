@@ -20,3 +20,11 @@ guieditorApp.config(function($routeProvider) {
 guieditorApp.controller('contactController', function($scope) {
     $scope.message = 'Message from contact controller';
 });
+
+angular.element(document).ready(function () {
+    let s = Settings.instance;
+    s.loadPromise().then(function() {
+        window.guiSettings = s;
+        angular.bootstrap(document.body, ["guieditorApp"]);
+    });
+});
