@@ -89,8 +89,11 @@ var url = "https://localhost:9002/hac";
         this.currentCsrf = m[1];
         this.emit("connectionSuccess");
 
-        this.executePromise("select {code} from {ComposedType}").then((res) => {
+        this.executePromise("select {code}, {pk} from {ComposedType}").then((res) => {
             let types = res.table.data.map((row) => row[0].text);
+            this.codeToType = res.table.data.reduce(function(o, row, i) {
+                o[row[1]] = row[0];
+            }, {});
             this.emit("typeSystemReady", types);
         });
         this.executePromise(`select {c.id}, {v.version} from {
