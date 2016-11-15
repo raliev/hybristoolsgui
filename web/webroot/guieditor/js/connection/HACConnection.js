@@ -93,6 +93,7 @@ var url = "https://localhost:9002/hac";
             let types = res.table.data.map((row) => row[0].text);
             this.codeToType = res.table.data.reduce(function(o, row, i) {
                 o[row[1]] = row[0];
+                return o;
             }, {});
             this.emit("typeSystemReady", types);
         });

@@ -19,7 +19,7 @@ class Settings extends Observable {
         } else {
             this.storage = {
                 set: function(key, value) {
-                    store[key] = value;
+                    store.set(key, value);
                 },
 
                 get: function(key, fn) {
@@ -30,7 +30,9 @@ class Settings extends Observable {
                     let result = {};
                     keys.forEach((k) => {
                         let stored = store.get(k);
-                        result[k] = stored;
+                        if (stored) {
+                            result[k] = stored;
+                        }
                     });
                     fn(result);
                 },
