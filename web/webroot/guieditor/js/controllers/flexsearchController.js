@@ -14,6 +14,23 @@ guieditorApp.controller('flexsearchController', function($scope) {
         typeSystem.connection = c;
         c.connect();
     });
+    $scope.itemsPerPage = 100;
+    $scope.getPageRange = function() {
+        let pageCnt = Math.ceil($scope.allData.length / $scope.itemsPerPage);
+        let res = [];
+        for (let i = 0; i < pageCnt; i++) {
+            res.push(i + 1);
+        }
+        return res;
+    }
+    $scope.setPage = function(idx) {
+        $scope.pageIdx = idx;
+        $scope.data = $scope.allData.slice(idx * $scope.itemsPerPage,
+            idx * $scope.itemsPerPage + $scope.itemsPerPage);
+        let el = $("#results_table");
+        let html = getHtmlTable($scope.headers, $scope.data);
+        el.html(html);
+    }
     conn.addListener("fsqlDone", (table, fsql, params) => {
         $(".js-execute-btn").button("success");
         if (params && params.fields) {
@@ -25,16 +42,20 @@ guieditorApp.controller('flexsearchController', function($scope) {
             $scope.showObjectPanel = true;
         } else {
             $scope.headers = table.headers;
-            $scope.data = table.data;
-            $scope.textareaResults = getPlainTxt(table.headers, table.data);
+            $scope.allData = table.data;
+            $scope.setPage(0);
+            $scope.pageRange = $scope.getPageRange();
+            $("#textarea_results").html(getPlainTxt(table.headers, table.data));
         }
         $scope.$apply();
     });
+
     typeSystem.addListener("getTypeDone", (type) => {
         $scope.objType = type;
         typeSystem.getTypeAttributes(type);
         $scope.$apply();
     });
+
     typeSystem.addListener("typeInfoDone", (info) => {
         $scope.showObjectPanel = true;
         let attributes = info.attributes;
