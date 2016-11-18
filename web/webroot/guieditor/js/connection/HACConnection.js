@@ -184,7 +184,8 @@ var url = "https://localhost:9002/hac";
     loadObject(pk) {
         let typeCode = HUtils.getTypeCode(pk);
         let typeName = this.codeToType[typeCode];
-        let fsql = `SELECT * FROM {${typeName}} WHERE {pk} = '${pk}'`;
+        console.log(typeCode + " " + typeName);
+        let fsql = `SELECT * FROM {${typeName}*} WHERE {pk} = '${pk}'`;
         this.executePromise(fsql).then(res => {
             res.params = {};
             res.params.objectResult = true;

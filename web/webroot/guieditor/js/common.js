@@ -31,7 +31,9 @@ function getHtmlTable(headers, data, cls) {
         res.push("<tr>");
         row.forEach(c => {
             res.push("<td>");
-            if (c.type == "pk") {
+            if (! c) {
+                res.push("[blank]");
+            } else if (c.type == "pk") {
                 res.push("<span class='glyphicon pk'></span>");
                 res.push("<span class='pk-value'>");
                 res.push(c.text);
@@ -40,7 +42,7 @@ function getHtmlTable(headers, data, cls) {
                 res.push(c.text);
             }
 
-            if (c.typeName) {
+            if (c && c.typeName) {
                 res.push("<span class='type-name'>");
                 res.push(c.typeName);
                 res.push("</span>");

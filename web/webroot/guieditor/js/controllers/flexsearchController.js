@@ -23,7 +23,7 @@ guieditorApp.controller('flexsearchController', function($scope) {
         }
         return res;
     }
-    $("#results_table").on("click", (e) => {
+    $("#results_table, #object_properties_table").on("click", (e) => {
         let t = $(e.target);
         if (t.hasClass("pk-value")) {
             let pk = t.html();
