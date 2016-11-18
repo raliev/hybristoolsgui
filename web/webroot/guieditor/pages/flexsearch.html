@@ -1,5 +1,5 @@
 
-<div class="container">
+<div class="container-fluid">
     <p>
         <textarea id="fsqlField" ng-model="fsqlField" rows="7" class="fsql"></textarea>
     </p>
@@ -125,8 +125,9 @@
             </div>
         </div>
         <div class="col-md-5" ng-style="{'display': (showObjectPanel ? 'block' : 'none')}">
-            <div class="panel panel-default">
+            <div class="panel object-panel panel-default">
                 <div class="panel-heading">Type: {{objType}} (pk: {{objPk}})</div>
+                <div id="object_properties_table"></div>
                 <table class="panel-body table">
                     <tbody>
                     <tr ng-repeat="r in objTable">

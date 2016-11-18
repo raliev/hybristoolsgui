@@ -9,9 +9,9 @@ guieditorApp.controller('flexsearchController', function($scope) {
     conn.connect();
 
     //end to app level
-    let typeSystem = new TypeSystem(conn);
+    //let typeSystem = new TypeSystem(conn);
     settings.addListener("reconnect", (c) => {
-        typeSystem.connection = c;
+        //typeSystem.connection = c;
         c.connect();
     });
     $scope.itemsPerPage = 100;
@@ -23,39 +23,53 @@ guieditorApp.controller('flexsearchController', function($scope) {
         }
         return res;
     }
+    $("#results_table").on("click", (e) => {
+        let t = $(e.target);
+        if (t.hasClass("pk-value")) {
+            let pk = t.html();
+            $scope.openObject(pk);
+        }
+    });
     $scope.setPage = function(idx) {
         $scope.pageIdx = idx;
         $scope.data = $scope.allData.slice(idx * $scope.itemsPerPage,
             idx * $scope.itemsPerPage + $scope.itemsPerPage);
         let el = $("#results_table");
-        let html = getHtmlTable($scope.headers, $scope.data);
+        let html = getHtmlTable($scope.headers, $scope.data, "results-table");
         el.html(html);
     }
-    conn.addListener("fsqlDone", (table, fsql, params) => {
-        $(".js-execute-btn").button("success");
-        if (params && params.fields) {
-            let objTable = [];
-            for (let i = 0; i < table.headers.length; i++) {
-                objTable.push([{text: table.headers[i].caption}, table.data[0][i]]);
-            }
-            $scope.objTable = objTable;
-            $scope.showObjectPanel = true;
-        } else {
-            $scope.headers = table.headers;
-            $scope.allData = table.data;
-            $scope.setPage(0);
-            $scope.pageRange = $scope.getPageRange();
-            $("#textarea_results").html(getPlainTxt(table.headers, table.data));
+    conn.addListener("loadObjectDone", (table, fsql, params) => {
+        $scope.objType = params.typeName;
+        $scope.objPk = params.pk;
+        let objTable = [];
+        for (let i = 0; i < table.headers.length; i++) {
+            objTable.push([{text: table.headers[i].caption}, table.data[0][i]]);
         }
+        let el = $("#object_properties_table");
+        let html = getHtmlTable(null, objTable, "results-table");
+        el.html(html);
+        $scope.showObjectPanel = true;
         $scope.$apply();
     });
 
+    conn.addListener("fsqlDone", (table, fsql, params) => {
+        $(".js-execute-btn").button("success");
+        $scope.headers = table.headers;
+        $scope.allData = table.data;
+        $scope.setPage(0);
+        $scope.pageRange = $scope.getPageRange();
+        $("#textarea_results").html(getPlainTxt(table.headers, table.data));
+        $scope.$apply();
+    });
+/*
     typeSystem.addListener("getTypeDone", (type) => {
         $scope.objType = type;
         typeSystem.getTypeAttributes(type);
         $scope.$apply();
     });
+*/
 
+/*
     typeSystem.addListener("typeInfoDone", (info) => {
         $scope.showObjectPanel = true;
         let attributes = info.attributes;
@@ -64,6 +78,7 @@ guieditorApp.controller('flexsearchController', function($scope) {
         conn.execute(sql, {fields: list.join(",")});
         $scope.$apply();
     });
+*/
 
     conn.addListener("typeSystemReady", (types) => {
         FSQLEditorParams.tables = types.reduce(
@@ -101,7 +116,7 @@ guieditorApp.controller('flexsearchController', function($scope) {
 
     $scope.openObject = function(pk) {
         $scope.objPk = pk;
-        typeSystem.getType(pk);
+        conn.loadObject(pk);
     }
 
     $scope.setFSql = function(sql) {

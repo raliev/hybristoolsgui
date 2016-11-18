@@ -89,11 +89,10 @@ var url = "https://localhost:9002/hac";
         this.currentCsrf = m[1];
         this.emit("connectionSuccess");
 
-        this.executePromise("select {code}, {pk} from {ComposedType}").then((res) => {
+        this.executePromise("SELECT internalcode, itemtypecode FROM composedtypes", {sql: true}).then((res) => {
             let types = res.table.data.map((row) => row[0].text);
-            this.codeToType = res.table.data.reduce(function(o, row, i) {
-                o[row[1]] = row[0];
-                return o;
+            this.codeToType = res.table.data.reduce(function(prev, curr, index, arr) {
+                prev[curr[1].text] = curr[0].text; return prev;
             }, {});
             this.emit("typeSystemReady", types);
         });
@@ -116,16 +115,21 @@ var url = "https://localhost:9002/hac";
     executePromise(fsql, params) {
         return new Promise((resolve, reject) => {
             let me = this;
+            let data = {};
+            if (params && params.sql) {
+                data.sqlQuery = fsql;
+            } else {
+                data.flexibleSearchQuery = fsql;
+            }
+            $.extend(data, {
+               maxCount: 10000,
+               user: this.user,
+               locale: (params ? params.language : null) || "en",
+               commit: false
+            });
             $.ajax({
                url: this._url + "/console/flexsearch/execute",
-               data: {
-                    flexibleSearchQuery: fsql,
-                    sqlQuery: "",
-                    maxCount: 10000,
-                    user: this.user,
-                    locale: (params ? params.language : null) || "en",
-                    commit: false
-               },
+               data: data,
                type: 'POST',
                dataType: "json",
                contentType: "application/x-www-form-urlencoded",
@@ -133,10 +137,34 @@ var url = "https://localhost:9002/hac";
                     "X-CSRF-TOKEN": this.currentCsrf
                }
             }).then(function(json) {
+                if (json.exception) {
+                    console.error(json.exception.message);
+                    //TODO handle error
+                    reject(json.exceptionStackTrace);
+                    return;
+                }
+
                 let headers = json.headers.map((h) => {return {caption: h}})
                 let data = [];
+                let pkTest = /^\d{5,}$/i;
                 json.resultList.forEach((row) => {
-                    data.push(row.map((r) => {return {text: r}}));
+                    data.push(row.map((c) => {
+                        if (me.codeToType && pkTest.test(c)) {
+                            let typeCode = HUtils.getTypeCode(c);
+                            let typeName = me.codeToType[typeCode];
+                            if (typeCode != -1 && typeName) {
+                                return {
+                                    text: c,
+                                    type: "pk",
+                                    typeCode: typeCode,
+                                    typeName: typeName
+                                }
+                            }
+                        } else {
+                            return {text: c}
+                        }
+
+                    }));
                 });
                 resolve({
                     table: {headers: headers,data: data},
@@ -150,6 +178,19 @@ var url = "https://localhost:9002/hac";
     execute(fsql, params) {
         this.executePromise(fsql, params).then((res) => {
             this.emit("fsqlDone", res.table, res.fsql, res.params)
+        });
+    }
+
+    loadObject(pk) {
+        let typeCode = HUtils.getTypeCode(pk);
+        let typeName = this.codeToType[typeCode];
+        let fsql = `SELECT * FROM {${typeName}} WHERE {pk} = '${pk}'`;
+        this.executePromise(fsql).then(res => {
+            res.params = {};
+            res.params.objectResult = true;
+            res.params.typeName = typeName;
+            res.params.pk = pk;
+            this.emit("loadObjectDone", res.table, res.fsql, res.params);
         });
     }
 

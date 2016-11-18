@@ -42,3 +42,21 @@ textarea.results {
 .middle-toolbar {
     padding: 10px;
 }
+table span.pk-value {
+    float: left;
+    cursor: pointer;
+
+}
+table span.pk-value:before {
+    content: "\e095";
+    font-family: "Glyphicons Halflings";
+}
+
+table td .type-name {
+    font-size: 70%;
+    /*vertical-align: super;*/
+}
+
+.object-panel {
+    overflow: auto;
+}

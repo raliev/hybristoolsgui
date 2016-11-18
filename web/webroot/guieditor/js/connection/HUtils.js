@@ -4,7 +4,7 @@ class HUtils {
         if (! l) {
             return -1;
         }
-        let res = l & 32767l;
+        let res = l & 32767;
         return res;
     }
 }
