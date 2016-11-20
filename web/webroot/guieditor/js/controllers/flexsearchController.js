@@ -1,4 +1,4 @@
-guieditorApp.controller('flexsearchController', function($scope) {
+guieditorApp.controller('flexsearchController', function($scope, $location, messageSrvc) {
     let sqlEditor = createFSQLEditor($(".fsql")[0]);
     //to app level:
     let settings = Settings.instance;
@@ -6,7 +6,14 @@ guieditorApp.controller('flexsearchController', function($scope) {
         sqlEditor.setValue(settings.lastSql);
     }
     let conn = settings.connection;
-    conn.connect();
+    conn.testAsync().then(() => {
+        conn.connect();
+    }).catch(() => {
+        messageSrvc.addErrorMessage(`Can't connect using connection with name '${settings.connectionName}'`);
+        $location.path("/connection");
+        $scope.$apply();
+    });
+
 
     //end to app level
     //let typeSystem = new TypeSystem(conn);
@@ -62,24 +69,6 @@ guieditorApp.controller('flexsearchController', function($scope) {
         $("#textarea_results").html(getPlainTxt(table.headers, table.data));
         $scope.$apply();
     });
-/*
-    typeSystem.addListener("getTypeDone", (type) => {
-        $scope.objType = type;
-        typeSystem.getTypeAttributes(type);
-        $scope.$apply();
-    });
-*/
-
-/*
-    typeSystem.addListener("typeInfoDone", (info) => {
-        $scope.showObjectPanel = true;
-        let attributes = info.attributes;
-        let list = attributes.filter((i) => {return ! i.collection}).map((i) => {return i.name});
-        let sql = `select {pk} from {${info.name}} where {pk} = '${$scope.objPk}'`;
-        conn.execute(sql, {fields: list.join(",")});
-        $scope.$apply();
-    });
-*/
 
     conn.addListener("typeSystemReady", (types) => {
         FSQLEditorParams.tables = types.reduce(

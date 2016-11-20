@@ -1,31 +1,14 @@
-guieditorApp.controller('connectionController', function($scope) {
-    let cs = Settings.instance.defaultConnectionSettings;
-    let htoolsUrl = "https://localhost:9002/tools";
-    let hacUrl = "https://localhost:9002/hac";
-    let htoolsDefCfg = {
-        url: "https://server1:9002/tools",
-        type: "htools"
-    }
-    let hacDefCfg = {
-        url: "https://server2:9002/hac",
-        type: "htools",
-        login: "admin",
-        password: "nimda",
-        user: "admin"
-    }
-    let configs = {
-        "hac": hacDefCfg,
-        "htools": htoolsDefCfg
-    }
-    if (cs) {
+guieditorApp.controller('connectionController', function($scope, messageSrvc) {
+    $scope.setConnectionName = function(name) {
+        $scope.name = name;
+        let cs = Settings.instance.getConnectionSettingsByName($scope.name);
         $scope.type = cs.type;
-    } else {
-        $scope.type = "htools";
+        $scope.currConfig = cs;
     }
-    $scope.currConfig = configs[$scope.type];
-    if (cs) {
-        $.extend($scope.currConfig, cs.params);
-    }
+    $scope.errors = messageSrvc.getAllErrorMessagesAndClear();
+    $scope.connectionName = $scope.name = Settings.instance.connectionName;
+    $scope.connections = Settings.instance.connections;
+    $scope.setConnectionName($scope.name);
 
     let constructProperties = function() {
         return {
@@ -49,12 +32,27 @@ guieditorApp.controller('connectionController', function($scope) {
         let cf = new ConnectionFactory();
         let p = constructProperties();
         let con = cf.constructConnection(p);
-        Settings.instance.defaultConnectionSettings = p;
+        Settings.saveConnectionSettingsByName($scope.name, p);
+        Settings.instance.connectionName = $scope.connectionName = $scope.name;
+
         Settings.instance.connection = con;
         Settings.instance.save();
     }
 
     $scope.changeType = function() {
-        $scope.currConfig = configs[$scope.type];
+        //$scope.currConfig = configs[$scope.type];
     }
+
+    $scope.addNewConnection = function() {
+        let idx = 0;
+        let newConnPrefix = "NEW CONNECTION";
+        function getNewConnName() {
+            return newConnPrefix + (idx == 0 ? "" : + idx);
+        }
+        while(Settings.instance.getConnectionSettingsByName(getNewConnName())) {
+            idx ++;
+        }
+        Settings.instance.saveConnectionSettingsByName(getNewConnName(), Settings.DEFAULT_LOCAL_HAC);
+    }
+
 });

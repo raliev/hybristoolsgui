@@ -45,13 +45,18 @@ class Settings extends Observable {
         this.lastSql = null;
         this.refResolving = null;
         this.maxSqlHistory = 10;
+        this.connectionName = "Default local hac";
+        this.connections = {
+            "Default local hac": Settings.DEFAULT_LOCAL_HAC,
+            "Default local tools": {
+                url: "https://server1:9002/tools",
+                type: "htools"
+            }
+        };
         this.init();
     }
 
     init() {
-        if (! this.defaultConnectionSettings) {
-            this.defaultConnectionSettings = Settings.DEFAULT_CONNECTION_SETTINGS;
-        }
         if (! this.lastSql) {
             this.lastSql = "SELECT {pk} FROM {CMSSite}";
         }
@@ -67,14 +72,22 @@ class Settings extends Observable {
         return this.defaultConnectionSettings;
     }
 
+    getConnectionSettingsByName(name) {
+        return this.connections[name] || this.DEFAULT_LOCAL_HAC
+    }
+
+    saveConnectionSettingsByName(name, cfg) {
+        this.connections[name] = cfg;
+    }
+
     get connection() {
         if (! this._con) {
             let cf = new ConnectionFactory()
             let con;
             try {
-                con = cf.constructConnection(this.defaultConnectionSettings);
+                con = cf.constructConnection(this.getConnectionSettingsByName(this.connectionName));
             } catch (e) {
-                con = cf.constructConnection(Settings.DEFAULT_CONNECTION_SETTINGS);
+                con = cf.constructConnection(Settings.DEFAULT_LOCAL_HAC);
             }
             this._con = con;
         }
@@ -94,7 +107,8 @@ class Settings extends Observable {
             console.error("no local storage");
             return;
         }
-        this.storage.set("defaultConnectionSettings", this.defaultConnectionSettings);
+        this.storage.set("connectionName", this.connectionName);
+        this.storage.set("connections", this.connections);
         this.storage.set("lastSql", this.lastSql);
         this.storage.set("sqlHistory", this.sqlHistory);
         this.storage.set("refResolving", this.refResolving);
@@ -102,7 +116,7 @@ class Settings extends Observable {
 
     loadPromise() {
         return new Promise((resolve, reject) => {
-                this.storage.getAll(["defaultConnectionSettings", "lastSql", "sqlHistory", "refResolving"], (vObj) => {
+                this.storage.getAll(["connectionName", "connections", "lastSql", "sqlHistory", "refResolving"], (vObj) => {
                     for (let k in vObj) {
                         this[k] = vObj[k];
                     }
@@ -144,13 +158,18 @@ class Settings extends Observable {
         return this._instance;
     }
 
-    static get DEFAULT_CONNECTION_SETTINGS() {
+    static get DEFAULT_LOCAL_HAC() {
         return {
-           type: "htools",
-           params: {
-               url: "https://localhost:9002/tools"
-           }
+            url: "https://server2:9002/hac",
+            type: "hac",
+            login: "admin",
+            password: "nimda",
+            user: "admin"
         };
+    }
+
+    static get DEFAULT_NEW_CONNECTION_NAME() {
+        return "New connection";
     }
 }
 
