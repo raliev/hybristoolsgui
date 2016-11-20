@@ -39,8 +39,9 @@ guieditorApp.controller('flexsearchController', function($scope) {
         el.html(html);
     }
     conn.addListener("loadObjectDone", (table, fsql, params) => {
+        let pk = params.pk;
         $scope.objType = params.typeName;
-        $scope.objPk = params.pk;
+        $scope.objPk = pk;
         let objTable = [];
         for (let i = 0; i < table.headers.length; i++) {
             objTable.push([{text: table.headers[i].caption}, table.data[0][i]]);
