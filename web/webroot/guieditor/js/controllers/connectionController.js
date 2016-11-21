@@ -1,4 +1,4 @@
-guieditorApp.controller('connectionController', function($scope, messageSrvc) {
+guieditorApp.controller('connectionController', function($scope, $location, messageSrvc) {
     $scope.setConnectionName = function(name) {
         $scope.name = name;
         let cs = Settings.instance.getConnectionSettingsByName($scope.name);
@@ -11,10 +11,7 @@ guieditorApp.controller('connectionController', function($scope, messageSrvc) {
     $scope.setConnectionName($scope.name);
 
     let constructProperties = function() {
-        return {
-            type: $scope.type,
-            params: $scope.currConfig
-        }
+        return $.extend({}, $scope.currConfig, {type: $scope.type});
     }
 
     $scope.test = function() {
@@ -32,11 +29,14 @@ guieditorApp.controller('connectionController', function($scope, messageSrvc) {
         let cf = new ConnectionFactory();
         let p = constructProperties();
         let con = cf.constructConnection(p);
-        Settings.saveConnectionSettingsByName($scope.name, p);
+        Settings.instance.saveConnectionSettingsByName($scope.name, p);
         Settings.instance.connectionName = $scope.connectionName = $scope.name;
 
         Settings.instance.connection = con;
-        Settings.instance.save();
+        Settings.instance.saveAllPromise().then(() => {
+            $location.path("/");
+            $scope.$apply();
+        });
     }
 
     $scope.changeType = function() {

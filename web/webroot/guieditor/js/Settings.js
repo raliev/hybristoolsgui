@@ -14,12 +14,27 @@ class Settings extends Observable {
                 getAll: function(keys, fn) {
                     chrome.storage.sync.get(keys, fn);
                 },
+                setAllPromise: function(obj) {
+                    return new Promise(function(resolve, reject) {
+                        chrome.storage.sync.set(obj, resolve);
+                    });
+                },
                 enabled: true
             };
         } else {
             this.storage = {
                 set: function(key, value) {
                     store.set(key, value);
+                },
+                setAllPromise: function(obj) {
+                    return new Promise(function(resolve, reject) {
+                        for(let k in obj) {
+                            if (obj.hasOwnProperty(k)) {
+                                store.set(k, obj[k]);
+                            }
+                        }
+                        resolve();
+                    });
                 },
 
                 get: function(key, fn) {
@@ -102,16 +117,22 @@ class Settings extends Observable {
         this.emit("reconnect", c);
     }
 
-    save() {
+    saveAllPromise() {
         if (! this.storage.enabled) {
             console.error("no local storage");
             return;
         }
-        this.storage.set("connectionName", this.connectionName);
-        this.storage.set("connections", this.connections);
-        this.storage.set("lastSql", this.lastSql);
-        this.storage.set("sqlHistory", this.sqlHistory);
-        this.storage.set("refResolving", this.refResolving);
+        return this.storage.setAllPromise({
+            "connectionName": this.connectionName,
+            "connections": this.connections,
+            "lastSql": this.lastSql,
+            "sqlHistory": this.sqlHistory,
+            "refResolving": this.refResolving
+        });
+    }
+
+    save() {
+        this.saveAllPromise();
     }
 
     loadPromise() {
