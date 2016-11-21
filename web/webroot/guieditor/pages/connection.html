@@ -2,20 +2,17 @@
     <h1>Connection settings</h1>
 
     <div class="row">
-
         <div ng-repeat="e in errors" class="alert alert-warning alert-dismissible fade in" role="alert">
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">×</span></button>
             {{e}}
         </div>
-
     </div>
     <div class="row"><form>
         <div class="form-group">
             <label>Name</label>
             <input ng-model="name" type="text" class="form-control" placeholder="name"/>
         </div>
-
         <div class="form-group">
             <label>Type</label>
             <label class="radio-inline" ng-click="changeType()">
@@ -23,9 +20,13 @@
                 Hybris Tools
             </label>
             <label class="radio-inline" ng-click="changeType()">
-                <input type="radio" ng-model="type" value="hac">
+                <input type="radio" ng-model="type" value="hac"/>
                 HAC
             </label>
+        </div>
+        <div class="form-group" ng-style="{'display': type == 'htools'?'block':'none'}">
+            <span class="glyphicon glyphicon-star"/>Consider installing hybris Runtime Development tools from
+            <a href="https://hybrismart.com/2016/08/20/hybris-runtime-development-tools-update/">here</a>.
         </div>
         <div class="form-group">
             <label>Connection point</label>
