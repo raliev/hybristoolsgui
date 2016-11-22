@@ -6,6 +6,7 @@ guieditorApp.controller('flexsearchController', function($scope, $location, mess
         sqlEditor.setValue(settings.lastSql);
     }
     let conn = settings.connection;
+    conn.clearEvents();
     conn.testAsync().then(() => {
         conn.connect();
     }).catch(() => {
@@ -81,11 +82,22 @@ guieditorApp.controller('flexsearchController', function($scope, $location, mess
         $scope.$apply();
     });
     conn.addListener("languagesReady", (languages) => {
-            $scope.languages = languages;
-            $scope.$apply();
+        $scope.languages = languages;
+        $scope.$apply();
+    });
+    conn.addListener("connectionSuccess", (options) => {
+        $scope.availableOptions = options;
+        $scope.$apply();
+    });
+    conn.addListener("error", (error) => {
+        $(".js-execute-btn").button("success");
+        $scope.error = error;
+        $scope.$apply();
     });
 
+
     $scope.execute = function() {
+        $scope.error = null;
         $scope.headers = [];
         $scope.data = [];
         let sql = sqlEditor.getValue();

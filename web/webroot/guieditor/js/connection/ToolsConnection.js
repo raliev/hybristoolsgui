@@ -38,6 +38,7 @@ class ToolsConnection extends Observable {
             this.emit("languagesReady", table.data);
         });
         this.inited = true;
+        this.emit("connectionSuccess", this.availableOptions);
     }
 
     get url () {
@@ -234,6 +235,14 @@ class ToolsConnection extends Observable {
                     params: params});
             });
         })
+    }
+
+    get availableOptions() {
+        return {
+            catalog: true,
+            language: true,
+            ref: true
+        };
     }
 
     getFields(fsql) {

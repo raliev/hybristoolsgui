@@ -75,6 +75,7 @@ var url = "https://localhost:9002/hac";
             }
 
         });
+        this.inited = true;
     }
 
 
@@ -87,7 +88,7 @@ var url = "https://localhost:9002/hac";
             this.failedLogIn(html);
         }
         this.currentCsrf = m[1];
-        this.emit("connectionSuccess");
+        this.emit("connectionSuccess", this.availableOptions);
 
         this.executePromise("SELECT internalcode, itemtypecode FROM composedtypes", {sql: true}).then((res) => {
             let types = res.table.data.map((row) => row[0].text);
@@ -105,6 +106,14 @@ var url = "https://localhost:9002/hac";
         this.executePromise("SELECT {isocode} FROM {Language}").then((res) => {
             this.emit("languagesReady", res.table.data);
         });
+    }
+
+    get availableOptions() {
+        return {
+            catalog: false,
+            language: true,
+            ref: false
+        };
     }
 
     failedLogIn() {
@@ -138,6 +147,7 @@ var url = "https://localhost:9002/hac";
                }
             }).then(function(json) {
                 if (json.exception) {
+                    me.emit("error", json.exception.message);
                     console.error(json.exception.message);
                     //TODO handle error
                     reject(json.exceptionStackTrace);
