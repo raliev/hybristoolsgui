@@ -1,3 +1,7 @@
+html, body {
+    overflow-y: visible;
+}
+
 textarea.fsql {
     width: 100%;
     font-family: monospace;
