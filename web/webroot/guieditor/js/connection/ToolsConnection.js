@@ -38,6 +38,7 @@ class ToolsConnection extends Observable {
             this.emit("languagesReady", table.data);
         });
         this.inited = true;
+        this.emit("connectionSuccess", this.availableOptions);
     }
 
     get url () {
@@ -66,6 +67,42 @@ class ToolsConnection extends Observable {
         return this.url + "/typesystem/type/" + type + "/attributes"
     }
 
+    getTypePromise(pk) {
+        return new Promise((resolve, reject) => {
+            let url = this.getObjectTypeUrl(pk);
+            $.ajax({
+                url: url
+            }).then((data) => {
+                let type = this.convertGetTypeResult(data);
+                resolve(type);
+            });
+        });
+    }
+
+    getTypeAttributesPromise(type) {
+        return new Promise((resolve, reject) => {
+            let url = this.getTypeInfoUrl(type);
+            $.ajax({
+                url: url
+            }).then((data) => {
+                let type = this.convertTypeInfo(data);
+                resolve(type);
+            });
+        });
+    }
+
+    loadObject(pk) {
+        this.getTypePromise(pk).then((type) => {
+            return this.getTypeAttributesPromise(type);
+        }).then((info) => {
+            let attributes = info.attributes;
+            let list = attributes.filter((i) => {return ! i.collection}).map((i) => {return i.name});
+            let sql = `select {pk} from {${info.name}} where {pk} = '${pk}'`;
+            this.executePromise(sql, {fields: list.join(",")}).then((res) => {
+                this.emit("loadObjectDone", res.table, res.fsql, res.params);
+            });
+        });
+    }
 
     /**
      * @return object with properties:
@@ -159,6 +196,12 @@ class ToolsConnection extends Observable {
     }
 
     execute(fsql, params) {
+        this.executePromise(fsql, params).then((res) => {
+            this.emit("fsqlDone", res.table, res.fsql, res.params);
+        })
+    }
+
+    executePromise(fsql, params) {
         let data = {query: fsql};
         if (params) {
             $.extend(data, params);
@@ -180,13 +223,26 @@ class ToolsConnection extends Observable {
         }
 
         let url = this.fsqlUrl;
-        $.ajax({
-            url: url,
-            data: data
-        }).then((data) => {
-            let table = this.convertFsqlResult(data);
-            this.emit("fsqlDone", table, fsql, params);
-        });
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                url: url,
+                data: data
+            }).then((data) => {
+                let table = this.convertFsqlResult(data);
+                resolve({
+                    table: table,
+                    fsql: fsql,
+                    params: params});
+            });
+        })
+    }
+
+    get availableOptions() {
+        return {
+            catalog: true,
+            language: true,
+            ref: true
+        };
     }
 
     getFields(fsql) {

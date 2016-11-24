@@ -1,3 +1,4 @@
+//deprecated
 class TypeSystem extends Observable {
     constructor(con) {
         super();

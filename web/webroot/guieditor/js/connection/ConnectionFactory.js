@@ -24,7 +24,7 @@ class ConnectionFactory {
      */
     constructConnection(cfg) {
         let driver = this._drivers[cfg.type];
-        let connection = new driver.cls(cfg.params);
+        let connection = new driver.cls(cfg);
         return connection;
     }
 

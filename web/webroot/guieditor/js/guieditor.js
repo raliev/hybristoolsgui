@@ -17,6 +17,22 @@ guieditorApp.config(function($routeProvider) {
 
 });
 
+guieditorApp.factory("messageSrvc", function() {
+  return {
+    errorMessages: [],
+
+    addErrorMessage: function(message) {
+        this.errorMessages.push(message);
+    },
+
+    getAllErrorMessagesAndClear: function() {
+        let res = this.errorMessages.concat();
+        this.errorMessages.length = 0;
+        return res;
+    }
+  }
+});
+
 guieditorApp.controller('contactController', function($scope) {
     $scope.message = 'Message from contact controller';
 });

@@ -1,6 +1,18 @@
 <div class="container">
     <h1>Connection settings</h1>
-    <form>
+
+    <div class="row">
+        <div ng-repeat="e in errors" class="alert alert-warning alert-dismissible fade in" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">×</span></button>
+            {{e}}
+        </div>
+    </div>
+    <div class="row"><form>
+        <div class="form-group">
+            <label>Name</label>
+            <input ng-model="name" type="text" class="form-control" placeholder="name"/>
+        </div>
         <div class="form-group">
             <label>Type</label>
             <label class="radio-inline" ng-click="changeType()">
@@ -8,9 +20,13 @@
                 Hybris Tools
             </label>
             <label class="radio-inline" ng-click="changeType()">
-                <input type="radio" ng-model="type" value="hac">
+                <input type="radio" ng-model="type" value="hac"/>
                 HAC
             </label>
+        </div>
+        <div class="form-group" ng-style="{'display': type == 'htools'?'block':'none'}">
+            <span class="glyphicon glyphicon-star"/>Consider installing hybris Runtime Development tools from
+            <a href="https://hybrismart.com/2016/08/20/hybris-runtime-development-tools-update/">here</a>.
         </div>
         <div class="form-group">
             <label>Connection point</label>
@@ -39,18 +55,47 @@
                 <input ng-model="currConfig.user" type="text" class="form-control" placeholder="URL" aria-describedby="basic-addon1"/>
             </div>
         </div>
+        <div class="well">
+            <button ng-click="test()" type="button"
+                    data-testing-text="Connecting..."
+                    data-success-text="Success!"
+                    data-error-text="Error"
+                    class="btn btn-primary js-test-button" autocomplete="off">
+                Test connection
+            </button>
+            <button ng-click="save()" type="button" class="btn btn-default">
+                Save and Use
+            </button>
+        </div>
+    </form></div>
 
+    <div class="row">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <span>Connection list</span>
+                <a class="pull-right" href="" ng-click="addNewConnection()"><span class="glyphicon glyphicon-plus"></span>Add</a>
+            </div>
+            <div class="panel-body">
+                <table class="table">
+                    <tr>
+                        <th>Name</th>
+                        <th>Point</th>
+                        <th>Type</th>
+                        <th></th>
+                    </tr>
+                    <tr ng-repeat="(name, cs) in connections">
+                        <td ng-click="setConnectionName(name)">
+                            <span title="This connection is used by default" ng-show="name == connectionName" class="glyphicon glyphicon-ok"></span>
+                            <a href="">{{name}}</a></td>
+                        <td>{{cs.url}}</td>
+                        <td>{{cs.type}}</td>
+                        <td>
+                            <span title="Delete" ng-show="name != connectionName" class="glyphicon glyphicon-trash"></span>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
 
-
-        <button ng-click="test()" type="button"
-                data-testing-text="Connecting..."
-                data-success-text="Success!"
-                data-error-text="Error"
-                class="btn btn-primary js-test-button" autocomplete="off">
-            Test connection
-        </button>
-        <button ng-click="save()" type="button" class="btn btn-default">
-            Save
-        </button>
-    </form>
 </div>
