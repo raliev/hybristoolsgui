@@ -169,6 +169,8 @@ var url = "https://localhost:9002/hac";
                                     typeCode: typeCode,
                                     typeName: typeName
                                 }
+                            } else {
+                                return {text: c}
                             }
                         } else {
                             return {text: c}
