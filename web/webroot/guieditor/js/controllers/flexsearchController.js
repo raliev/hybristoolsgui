@@ -95,6 +95,11 @@ guieditorApp.controller('flexsearchController', function($scope, $location, mess
         $scope.$apply();
     });
 
+    sqlEditor.on('keypress', function(instance, e) {
+        if (e.ctrlKey && e.code == "Enter") {
+            $scope.execute();
+        }
+    });
 
     $scope.execute = function() {
         $scope.error = null;
