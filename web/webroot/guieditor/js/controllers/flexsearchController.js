@@ -7,13 +7,15 @@ guieditorApp.controller('flexsearchController', function($scope, $location, mess
     }
     let conn = settings.connection;
     conn.clearEvents();
-    conn.testAsync().then(() => {
-        conn.connect();
-    }).catch(() => {
-        messageSrvc.addErrorMessage(`Can't connect using connection with name '${settings.connectionName}'`);
-        $location.path("/connection");
-        $scope.$apply();
-    });
+    if (! conn.inited) {
+        conn.testAsync().then(() => {
+            conn.connect();
+        }).catch(() => {
+            messageSrvc.addErrorMessage(`Can't connect using connection with name '${settings.connectionName}'`);
+            $location.path("/connection");
+            $scope.$apply();
+        });
+    }
 
 
     //end to app level

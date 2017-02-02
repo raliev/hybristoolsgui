@@ -54,3 +54,8 @@ function getHtmlTable(headers, data, cls) {
     res.push("</table>");
     return res.join("");
 }
+
+function printStacktrace() {
+  var stack = new Error().stack;
+  console.log( stack );
+}

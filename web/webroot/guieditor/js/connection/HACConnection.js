@@ -20,6 +20,8 @@ class HACConnection extends Observable {
     }
 
     init() {
+        console.log("init");
+        printStacktrace();
 /*
 var login = "admin";
 var password = "nimda";
@@ -43,6 +45,7 @@ var url = "https://localhost:9002/hac";
         }
 
         function doLogin(htmlForm) {
+            console.log("doLogin");
             let csrfRe = /<input type="hidden"[\s.]*name="_csrf"[\s.]*value="([^"]+)"/gm;
             let m = csrfRe.exec(htmlForm);
             if (! m) {
@@ -88,8 +91,13 @@ var url = "https://localhost:9002/hac";
             this.failedLogIn(html);
         }
         this.currentCsrf = m[1];
+        console.log("csrf " + this.currentCsrf);
         this.emit("connectionSuccess", this.availableOptions);
 
+        setTimeout(this.loadTypes.bind(this), 500);
+    }
+
+    loadTypes() {
         this.executePromise("SELECT internalcode, itemtypecode FROM composedtypes", {sql: true}).then((res) => {
             let types = res.table.data.map((row) => row[0].text);
             this.codeToType = res.table.data.reduce(function(prev, curr, index, arr) {

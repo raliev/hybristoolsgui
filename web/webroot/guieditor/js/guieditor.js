@@ -1,4 +1,7 @@
-var guieditorApp = angular.module('guieditorApp', ['ngRoute']);
+var guieditorApp = angular.module("guieditorApp", ["ngRoute"]);
+guieditorApp.config(['$locationProvider', function($locationProvider) {
+  $locationProvider.hashPrefix('');
+}]);
 
 guieditorApp.config(function($routeProvider) {
     $routeProvider
@@ -37,10 +40,10 @@ guieditorApp.controller('contactController', function($scope) {
     $scope.message = 'Message from contact controller';
 });
 
-angular.element(document).ready(function () {
-    let s = Settings.instance;
-    s.loadPromise().then(function() {
-        window.guiSettings = s;
-        angular.bootstrap(document.body, ["guieditorApp"]);
-    });
-});
+//angular.element(document).ready(function () {
+//    let s = Settings.instance;
+//    s.loadPromise().then(function() {
+//        window.guiSettings = s;
+//        angular.bootstrap(document.body, ["guieditorApp"]);
+//    });
+//});
