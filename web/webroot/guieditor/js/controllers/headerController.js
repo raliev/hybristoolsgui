@@ -1,5 +1,6 @@
 guieditorApp.controller('headerController', function($scope) {
     $scope.$on('$routeChangeSuccess', function(ev, current, previous) {
+        $scope.connectionName = Settings.instance.connectionName;
         switch(current.loadedTemplateUrl) {
             case "pages/contact.html":
                 $scope.tab = "contact"; break;

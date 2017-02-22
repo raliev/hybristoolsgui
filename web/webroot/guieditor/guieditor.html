@@ -43,14 +43,19 @@
 <!-- HEADER AND NAVBAR -->
 <header ng-controller="headerController">
     <nav class="navbar navbar-default">
-        <div class="container">
+        <div class="container-fluid">
             <div class="navbar-header">
                 <a class="navbar-brand" href="/">Hybris tools gui</a>
+            </div>
+            <div ng-show="tab == 'sql'" class="navbar-header navbar-brand">
+                [{{connectionName}}]
             </div>
 
             <ul class="nav navbar-nav navbar-right">
                 <li ng-class="tab == 'sql' ? 'active' : ''"><a href="#/"><i class="fa fa-flexsearch"></i> Home</a></li>
-                <li ng-class="tab == 'connection' ? 'active' : ''"><a href="#connection"><i class="fa fa-connection"></i>Connection</a></li>
+                <li ng-class="tab == 'connection' ? 'active' : ''">
+                    <a href="#connection"><i class="fa fa-connection"></i>Connection</a>
+                </li>
                 <li ng-class="tab == 'contact' ? 'active' : ''"><a href="#contact"><i class="fa fa-comment"></i> Contact</a></li>
             </ul>
         </div>

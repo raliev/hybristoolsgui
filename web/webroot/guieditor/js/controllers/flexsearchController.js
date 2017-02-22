@@ -1,4 +1,4 @@
-guieditorApp.controller('flexsearchController', function($scope, $location, messageSrvc) {
+guieditorApp.controller('flexsearchController', function($scope, $location, $rootScope, messageSrvc) {
     let sqlEditor = createFSQLEditor($(".fsql")[0]);
     //to app level:
     let settings = Settings.instance;
