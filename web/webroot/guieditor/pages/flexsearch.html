@@ -43,9 +43,22 @@
                 Ref resolving
             </button>
 
-            <button type="button" class="right-side pull-right btn btn-default" aria-label="History" data-toggle="modal" data-target="#historyModal">
-                <span class="glyphicon glyphicon-time" aria-hidden="true"></span> History
-            </button>
+            <div class="btn-group right-side pull-right">
+                <button type="button" class="btn btn-default" aria-label="History" data-toggle="modal" data-target="#historyModal">
+                    <span class="glyphicon glyphicon-time" aria-hidden="true"></span> History
+                </button>
+            </div>
+            <div class="btn-group right-side pull-right ">
+                <button title="Open query" type="button" class="btn btn-default" aria-label="History" data-toggle="modal" data-target="#openQueryModal">
+                    <span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span>
+                </button>
+            </div>
+            <div class="btn-group right-side pull-right ">
+                <button title="Save query" type="button" class="btn btn-default" aria-label="History" data-toggle="modal" data-target="#saveQueryModal">
+                    <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>
+                </button>
+            </div>
+
         </div>
     </form>
 
@@ -94,6 +107,54 @@
             </div>
         </div>
     </div>
+    <!-- dialog end -->
+
+    <!-- Save modal dialog -->
+    <div class="modal" id="saveQueryModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Save query</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Query name</label>
+                        <input autofocus="" ng-model="saveQueryName" type="text" class="form-control"/>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button ng-click="saveQuery()" type="button" class="btn btn-default" data-dismiss="modal">Save</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- dialog end -->
+
+    <!-- Open modal dialog -->
+    <div class="modal" id="openQueryModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Save query</h4>
+                </div>
+                <div class="modal-body">
+                    <ul class="fsql-history-list list-group" ng-repeat="(name, sql) in savedQueries" data-dismiss="modal" >
+                        <li class="list-group-item"><a href="" ng-click="openQuery(name)">{{name}}</a>
+                        <span ng-click="deleteQuery(name)" class="pull-right glyphicon glyphicon-remove"></span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- dialog end -->
+
     <div class="row" ng-style="{'display': (error ? 'block' : 'none')}">
         <div class="alert alert-warning alert-dismissible fade in" role="alert">
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">

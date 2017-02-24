@@ -163,4 +163,18 @@ guieditorApp.controller('flexsearchController', function($scope, $location, $roo
     $scope.saveSettings = function() {
         settings.save();
     }
+    $scope.savedQueries = $.extend({}, settings.queries);
+    $scope.saveQuery = function() {
+        settings.saveQuery($scope.saveQueryName, sqlEditor.getValue());
+        $scope.savedQueries = $.extend({}, settings.queries);
+    }
+    $scope.openQuery = function(name) {
+        let sql = settings.getQuery(name);
+        $scope.setFSql(sql);
+        $scope.saveQueryName = name;
+    }
+    $scope.deleteQuery = function(name) {
+        settings.deleteQuery(name);
+        $scope.savedQueries = $.extend({}, settings.queries);
+    }
 });

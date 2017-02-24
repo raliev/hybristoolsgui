@@ -59,3 +59,10 @@ function printStacktrace() {
   var stack = new Error().stack;
   console.log( stack );
 }
+
+/* autofocus fields in modal dialogs */
+$(window.document).on('shown.bs.modal', '.modal', function() {
+    window.setTimeout(function() {
+        $('[autofocus]', this).focus();
+    }.bind(this), 100);
+});

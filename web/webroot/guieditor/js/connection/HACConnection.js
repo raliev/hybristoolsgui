@@ -16,17 +16,11 @@ class HACConnection extends Observable {
 
     reportError(er) {
         console.error(er);
-        this.emit("connectionError");
+        this.emit("connectionError", er);
     }
 
     init() {
         console.log("init");
-        printStacktrace();
-/*
-var login = "admin";
-var password = "nimda";
-var url = "https://localhost:9002/hac";
-*/
         let login = this.login || "admin";
         let password = this.password || "nimda";
         let url = this._url;
@@ -70,12 +64,15 @@ var url = "https://localhost:9002/hac";
             }
         }
 
-        loadLogin().then(doLogin).then(checkLoginCorrect).catch((data) => {
-            if (data && data.status == 404) {
+        loadLogin().then(doLogin).then(checkLoginCorrect).fail((xhr, status, error)  => {
+            if (status == "error" && xhr.status == 0) {
+                this.reportError(`This is possible that the connection to HAC has been blocked. Try to open link '${url}' in the browser and repeat.`);
+            } else if (status == 400) {
                 this.reportError("No page found. Doublecheck URL provided, make sure that HAC login form is opened at URL/login.jsp.");
             } else {
                 this.emit("connectionError");
             }
+
 
         });
         this.inited = true;
@@ -221,8 +218,8 @@ var url = "https://localhost:9002/hac";
             this.addListener("connectionSuccess", () => {
                 resolve();
             });
-            this.addListener("connectionError", () => {
-                reject();
+            this.addListener("connectionError", (msg) => {
+                reject(msg);
             });
         });
     }
