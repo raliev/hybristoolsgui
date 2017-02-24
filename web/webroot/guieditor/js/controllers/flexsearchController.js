@@ -48,8 +48,20 @@ guieditorApp.controller('flexsearchController', function($scope, $location, $roo
         let html = getHtmlTable($scope.headers, $scope.data, "results-table");
         el.html(html);
     }
+    $scope.objectBrowseHistory = [];
+    $scope.objectBrowseHistoryAvailable = function() {
+        return $scope.objectBrowseHistory.length > 1;
+    }
+    $scope.objectBack = function() {
+        if ($scope.objectBrowseHistory.length) {
+            $scope.objectBrowseHistory.pop();
+            let pk = $scope.objectBrowseHistory.pop();
+            $scope.openObject(pk);
+        }
+    }
     conn.addListener("loadObjectDone", (table, fsql, params) => {
         let pk = params.pk;
+        $scope.objectBrowseHistory.push(pk);
         $scope.objType = params.typeName;
         $scope.objPk = pk;
         let objTable = [];

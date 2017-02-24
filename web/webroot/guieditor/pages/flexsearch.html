@@ -195,7 +195,11 @@
         </div>
         <div class="col-md-5" ng-style="{'display': (showObjectPanel ? 'block' : 'none')}">
             <div class="panel object-panel panel-default">
-                <div class="panel-heading">Type: {{objType}} (pk: {{objPk}})</div>
+                <div class="panel-heading">Type: {{objType}} (pk: {{objPk}})
+                    <button class="pull-right" title="Previous object" ng-click="objectBack()" ng-show="objectBrowseHistoryAvailable()" type="button" class="btn btn-default btn-xs">
+                        <span class="glyphicon glyphicon-step-backward"></span>
+                    </button>
+                </div>
                 <div id="object_properties_table"></div>
                 <table class="panel-body table">
                     <tbody>
