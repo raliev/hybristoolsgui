@@ -16,7 +16,12 @@ textarea.fsql {
     font-family: monospace;
 }
 
+.results-table {
+    -webkit-user-select: text;
+}
+
 textarea.results {
+
     width: 100%;
     font-family: monospace;
 }
@@ -62,6 +67,7 @@ table td .type-name {
 }
 
 .object-panel {
+    -webkit-user-select: text;
     overflow: auto;
 }
 

@@ -1,0 +1,1 @@
+/usr/bin/chromium-browser --pack-extension=./guieditor/ --pack-extension-key=./guieditor.pem
