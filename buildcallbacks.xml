@@ -152,10 +152,38 @@
 		</sequential>
 	</macrodef>
 
+	<macrodef name="hybristoolsguiBuildCRX">
+		<sequential>
+			<echo message="*** Create CRX *** "/>
+			<if>
+				<!-- default value for fail on error -->
+				<os family="unix" />
+				<then>
+					<property name="chromeExec" value="chromium-browser"/>
+				</then>
+				<else>
+					<property name="chromeExec" value="C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"/>
+				</else>
+			</if>
+			<exec dir="${ext.hybristoolsgui.path}/web/webroot" executable="chromium-browser">
+				<arg line="--pack-extension=./guieditor/"/>
+			</exec>
+		</sequential>
+	</macrodef>
+
 	<macrodef name="hybristoolsgui_after_build">
 		<sequential>
-			<echo message="*** Init NPM *** "/>
+			<echo message="*** Load external libs *** "/>
 			<toolsBowerBuild path="${ext.hybristoolsgui.path}/web/webroot/guieditor" phase="install"/>
+			<if>
+				<os family="unix" />
+				<then>
+					<exec dir="${ext.hybristoolsgui.path}/web/webroot/guieditor" executable="rm">
+						<arg line="node_modules"/>
+					</exec>
+				</then>
+			</if>
+			<hybristoolsguiBuildCRX/>
 		</sequential>
 	</macrodef>
 		
