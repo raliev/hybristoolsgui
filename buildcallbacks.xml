@@ -75,12 +75,87 @@
 	
 	     ${ear.path}: 			path to ear
 	 -->
+
+
+	<macrodef name="toolsBowerBuild">
+		<attribute name="path" default="NOT SET"/>
+		<attribute name="phase" default="NOT SET"/>
+		<attribute name="failonerror" default="NOT SET"/>
+		<sequential>
+			<echo message="START of calling bower @{phase} on @{path}"/>
+			<property environment="env"/>
+
+			<detectOS/>
+			<property file="${ext.npmancillary.path}/resources/ant/${os.family}.properties" />
+
+
+			<if>
+				<equals arg1="${phase}" arg2="clean"/>
+				<then>
+					<removeLink path="@{path}${file.separator}node_modules" />
+				</then>
+			</if>
+			<if>
+				<!-- default value for fail on error -->
+				<equals arg1="@{phase}" arg2="test_only" />
+				<then>
+					<property name="failonerrorDefault"  value="false"/>
+				</then>
+				<else>
+					<property name="failonerrorDefault"  value="true"/>
+				</else>
+			</if>
+			<if>
+				<!-- use default if no other value was provided  -->
+				<equals arg1="@{failonerror}" arg2="NOT SET" />
+				<then>
+					<property name="failonerrorValue"  value="${failonerrorDefault}"/>
+				</then>
+				<else>
+					<property name="failonerrorValue"  value="@{failonerror}"/>
+				</else>
+			</if>
+			<echo message="failonerror=@{failonerror}, default=${failonerrorDefault}, value=${failonerrorValue}" />
+
+			<createNodeModulesSymlink path="@{path}"/>
+			<cleanGruntBuildSymlinks/>
+			<exec executable="chmod">
+				<arg line="755 ${loc.NPM_HOME}/node_modules/bower/bin/bower"/>
+			</exec>
+			<resetNpmPermissions/>
+			<if>
+				<os family="windows"/>
+				<then>
+					<echo message="Running bower @{phase}"/>
+					<exec dir="@{path}" executable="${loc.NPM_BINARIES_HOME}\.bin\bower.cmd" failonerror="${failonerrorValue}">
+						<env key="Path" value="${env.Path}${path.separator}${loc.EXTRA_PATH}"/>
+						<env key="NPM_HOME" value="${loc.NPM_HOME}"/>
+						<env key="NPM_BINARIES_HOME" value="${loc.NPM_BINARIES_HOME}"/>
+						<env key="NODE_HOME" value="${loc.NODE_HOME}"/>
+
+						<arg value="@{phase}"/>
+					</exec>
+				</then>
+				<else>
+					<echo message="Running bower @{phase}"/>
+					<exec dir="@{path}" executable="${loc.NPM_BINARIES_HOME}/.bin/bower" failonerror="${failonerrorValue}">
+						<env key="PATH" value="${loc.EXTRA_PATH}${path.separator}${env.PATH}"/>
+						<env key="NPM_HOME" value="${loc.NPM_HOME}"/>
+						<env key="NPM_BINARIES_HOME" value="${loc.NPM_BINARIES_HOME}"/>
+						<env key="NODE_HOME" value="${loc.NODE_HOME}"/>
+
+						<arg value="@{phase}"/>
+					</exec>
+				</else>
+			</if>
+			<echo message="END of calling bower @{phase}"/>
+		</sequential>
+	</macrodef>
+
 	<macrodef name="hybristoolsgui_after_build">
 		<sequential>
-			<echo message="*** Install NPM packages *** "/>
-			<exec executable="npm" dir="${ext.hybristoolsgui.path}/web/webroot/guieditor">
-				<arg value="install"/>
-			</exec>
+			<echo message="*** Init NPM *** "/>
+			<toolsBowerBuild path="${ext.hybristoolsgui.path}/web/webroot/guieditor" phase="install"/>
 		</sequential>
 	</macrodef>
 		
