@@ -119,9 +119,6 @@
 
 			<createNodeModulesSymlink path="@{path}"/>
 			<cleanGruntBuildSymlinks/>
-			<exec executable="chmod">
-				<arg line="755 ${loc.NPM_HOME}/node_modules/bower/bin/bower"/>
-			</exec>
 			<resetNpmPermissions/>
 			<if>
 				<os family="windows"/>
@@ -138,12 +135,14 @@
 				</then>
 				<else>
 					<echo message="Running bower @{phase}"/>
+					<exec executable="chmod">
+						<arg line="755 ${loc.NPM_HOME}/node_modules/bower/bin/bower"/>
+					</exec>
 					<exec dir="@{path}" executable="${loc.NPM_BINARIES_HOME}/.bin/bower" failonerror="${failonerrorValue}">
 						<env key="PATH" value="${loc.EXTRA_PATH}${path.separator}${env.PATH}"/>
 						<env key="NPM_HOME" value="${loc.NPM_HOME}"/>
 						<env key="NPM_BINARIES_HOME" value="${loc.NPM_BINARIES_HOME}"/>
 						<env key="NODE_HOME" value="${loc.NODE_HOME}"/>
-
 						<arg value="@{phase}"/>
 					</exec>
 				</else>
@@ -156,18 +155,18 @@
 		<sequential>
 			<echo message="*** Create CRX *** "/>
 			<if>
-				<!-- default value for fail on error -->
 				<os family="unix" />
 				<then>
-					<property name="chromeExec" value="chromium-browser"/>
+					<exec dir="${ext.hybristoolsgui.path}/web/webroot" executable="chromium-browser">
+						<arg line="--pack-extension=./guieditor/"/>
+					</exec>
 				</then>
 				<else>
-					<property name="chromeExec" value="C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"/>
+					<exec dir="${ext.hybristoolsgui.path}/web/webroot" executable="cmd">
+						<arg line="/c build_crx.bat"/>
+					</exec>
 				</else>
 			</if>
-			<exec dir="${ext.hybristoolsgui.path}/web/webroot" executable="chromium-browser">
-				<arg line="--pack-extension=./guieditor/"/>
-			</exec>
 		</sequential>
 	</macrodef>
 
