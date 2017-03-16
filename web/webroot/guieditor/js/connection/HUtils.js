@@ -1,6 +1,8 @@
 class HUtils {
     static getTypeCode(pk) {
-        if (("" + pk).length < 9) {
+        pk = "" + pk;
+        let pkTest = /^[1-9]\d{8,}$/i;
+        if (! pkTest.test(pk)) {
             return -1;
         }
         let l = parseInt(pk, 10);

@@ -118,8 +118,10 @@ class ToolsConnection extends Observable {
         let maxColumns = 0;
         for (let i = 1; i < lines.length; i++) {
             let line = lines[i];
-            let row = line.split('\t').map((i) => {return {text: i}});
-            row[row.length - 1].type = "pk"; //consider last column as a pk
+            let row = line.split('\t').map((i) => {
+                let typeCode = HUtils.getTypeCode(i);
+                return {text: i, type: typeCode != -1 ? "pk" : "string"}
+            });
             maxColumns = maxColumns > row.length ? maxColumns : row.length;
             data.push(row);
         }
@@ -155,6 +157,9 @@ class ToolsConnection extends Observable {
                 continue;
             }
             let cols = l.split('\t');
+            if (cols[0] == "classificationIndexString") { //TODO analyze deeply
+                continue;
+            }
             let attr = {
                 name: cols[0],
                 type: cols[1],
