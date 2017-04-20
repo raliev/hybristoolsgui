@@ -13,6 +13,7 @@
     <extension abstractclassprefix="Generated" classprefix="Hybristoolsgui" managername="HybristoolsguiManager" managersuperclass="de.hybris.platform.jalo.extension.Extension" name="hybristoolsgui" usemaven="false">
 
         <!-- you should add all required extensions to this list -->
+        <requires-extension name="npmancillary" />
         <requires-extension name="cockpit"/>
         <!-- core extensions - see PLA-7642
         <requires-extension name="hmc" version="5.0.0-SNAPSHOT"/>

@@ -20,7 +20,11 @@ guieditorApp.controller('connectionController', function($scope, $location, mess
         let con = cf.constructConnection(constructProperties());
         con.testAsync().then(() => {
             $btn.button("success");
-        }).catch(() => {
+        }).catch((msg) => {
+            if (msg) {
+                $scope.errors = [msg];
+                $scope.$apply();
+            }
             $btn.button("error");
         });
     }

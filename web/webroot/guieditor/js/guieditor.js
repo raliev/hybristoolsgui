@@ -1,4 +1,7 @@
-var guieditorApp = angular.module('guieditorApp', ['ngRoute']);
+var guieditorApp = angular.module("guieditorApp", ["ngRoute"]);
+guieditorApp.config(['$locationProvider', function($locationProvider) {
+  $locationProvider.hashPrefix('');
+}]);
 
 guieditorApp.config(function($routeProvider) {
     $routeProvider

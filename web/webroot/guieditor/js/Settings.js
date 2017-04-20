@@ -57,6 +57,7 @@ class Settings extends Observable {
 
         }
         this.sqlHistory = null;
+        this.queries = null;
         this.lastSql = null;
         this.refResolving = null;
         this.maxSqlHistory = 10;
@@ -80,6 +81,9 @@ class Settings extends Observable {
         }
         if (! this.refResolving) {
             this.refResolving = ["Category:code,name", "Media:code"];
+        }
+        if (! this.queries) {
+            this.queries = {};
         }
     }
 
@@ -127,7 +131,8 @@ class Settings extends Observable {
             "connections": this.connections,
             "lastSql": this.lastSql,
             "sqlHistory": this.sqlHistory,
-            "refResolving": this.refResolving
+            "refResolving": this.refResolving,
+            "queries": this.queries
         });
     }
 
@@ -137,7 +142,7 @@ class Settings extends Observable {
 
     loadPromise() {
         return new Promise((resolve, reject) => {
-                this.storage.getAll(["connectionName", "connections", "lastSql", "sqlHistory", "refResolving"], (vObj) => {
+                this.storage.getAll(["connectionName", "connections", "lastSql", "sqlHistory", "refResolving", "queries"], (vObj) => {
                     for (let k in vObj) {
                         this[k] = vObj[k];
                     }
@@ -170,6 +175,19 @@ class Settings extends Observable {
             }
         }
         this.save("lastSql");
+    }
+
+    saveQuery(name, sql) {
+        this.queries[name] = sql;
+        this.save("queries");
+    }
+
+    deleteQuery(name) {
+        delete this.queries[name];
+    }
+
+    getQuery(name) {
+        return this.queries[name];
     }
 
     static get instance() {

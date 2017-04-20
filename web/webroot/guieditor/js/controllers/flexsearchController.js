@@ -1,4 +1,4 @@
-guieditorApp.controller('flexsearchController', function($scope, $location, messageSrvc) {
+guieditorApp.controller('flexsearchController', function($scope, $location, $rootScope, messageSrvc) {
     let sqlEditor = createFSQLEditor($(".fsql")[0]);
     //to app level:
     let settings = Settings.instance;
@@ -7,13 +7,15 @@ guieditorApp.controller('flexsearchController', function($scope, $location, mess
     }
     let conn = settings.connection;
     conn.clearEvents();
-    conn.testAsync().then(() => {
-        conn.connect();
-    }).catch(() => {
-        messageSrvc.addErrorMessage(`Can't connect using connection with name '${settings.connectionName}'`);
-        $location.path("/connection");
-        $scope.$apply();
-    });
+    if (! conn.inited) {
+        conn.testAsync().then(() => {
+            conn.connect();
+        }).catch(() => {
+            messageSrvc.addErrorMessage(`Can't connect using connection with name '${settings.connectionName}'`);
+            $location.path("/connection");
+            $scope.$apply();
+        });
+    }
 
 
     //end to app level
@@ -46,8 +48,20 @@ guieditorApp.controller('flexsearchController', function($scope, $location, mess
         let html = getHtmlTable($scope.headers, $scope.data, "results-table");
         el.html(html);
     }
+    $scope.objectBrowseHistory = [];
+    $scope.objectBrowseHistoryAvailable = function() {
+        return $scope.objectBrowseHistory.length > 1;
+    }
+    $scope.objectBack = function() {
+        if ($scope.objectBrowseHistory.length) {
+            $scope.objectBrowseHistory.pop();
+            let pk = $scope.objectBrowseHistory.pop();
+            $scope.openObject(pk);
+        }
+    }
     conn.addListener("loadObjectDone", (table, fsql, params) => {
         let pk = params.pk;
+        $scope.objectBrowseHistory.push(pk);
         $scope.objType = params.typeName;
         $scope.objPk = pk;
         let objTable = [];
@@ -95,6 +109,11 @@ guieditorApp.controller('flexsearchController', function($scope, $location, mess
         $scope.$apply();
     });
 
+    sqlEditor.on('keypress', function(instance, e) {
+        if (e.ctrlKey && e.code == "Enter") {
+            $scope.execute();
+        }
+    });
 
     $scope.execute = function() {
         $scope.error = null;
@@ -155,5 +174,19 @@ guieditorApp.controller('flexsearchController', function($scope, $location, mess
     }
     $scope.saveSettings = function() {
         settings.save();
+    }
+    $scope.savedQueries = $.extend({}, settings.queries);
+    $scope.saveQuery = function() {
+        settings.saveQuery($scope.saveQueryName, sqlEditor.getValue());
+        $scope.savedQueries = $.extend({}, settings.queries);
+    }
+    $scope.openQuery = function(name) {
+        let sql = settings.getQuery(name);
+        $scope.setFSql(sql);
+        $scope.saveQueryName = name;
+    }
+    $scope.deleteQuery = function(name) {
+        settings.deleteQuery(name);
+        $scope.savedQueries = $.extend({}, settings.queries);
     }
 });

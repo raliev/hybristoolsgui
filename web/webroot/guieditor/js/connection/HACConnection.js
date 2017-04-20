@@ -16,15 +16,11 @@ class HACConnection extends Observable {
 
     reportError(er) {
         console.error(er);
-        this.emit("connectionError");
+        this.emit("connectionError", er);
     }
 
     init() {
-/*
-var login = "admin";
-var password = "nimda";
-var url = "https://localhost:9002/hac";
-*/
+        console.log("init");
         let login = this.login || "admin";
         let password = this.password || "nimda";
         let url = this._url;
@@ -43,6 +39,7 @@ var url = "https://localhost:9002/hac";
         }
 
         function doLogin(htmlForm) {
+            console.log("doLogin");
             let csrfRe = /<input type="hidden"[\s.]*name="_csrf"[\s.]*value="([^"]+)"/gm;
             let m = csrfRe.exec(htmlForm);
             if (! m) {
@@ -67,12 +64,15 @@ var url = "https://localhost:9002/hac";
             }
         }
 
-        loadLogin().then(doLogin).then(checkLoginCorrect).catch((data) => {
-            if (data && data.status == 404) {
+        loadLogin().then(doLogin).then(checkLoginCorrect).fail((xhr, status, error)  => {
+            if (status == "error" && xhr.status == 0) {
+                this.reportError(`This is possible that the connection to HAC has been blocked. Try to open link '${url}' in the browser and repeat.`);
+            } else if (status == 400) {
                 this.reportError("No page found. Doublecheck URL provided, make sure that HAC login form is opened at URL/login.jsp.");
             } else {
                 this.emit("connectionError");
             }
+
 
         });
         this.inited = true;
@@ -88,8 +88,13 @@ var url = "https://localhost:9002/hac";
             this.failedLogIn(html);
         }
         this.currentCsrf = m[1];
+        console.log("csrf " + this.currentCsrf);
         this.emit("connectionSuccess", this.availableOptions);
 
+        setTimeout(this.loadTypes.bind(this), 500);
+    }
+
+    loadTypes() {
         this.executePromise("SELECT internalcode, itemtypecode FROM composedtypes", {sql: true}).then((res) => {
             let types = res.table.data.map((row) => row[0].text);
             this.codeToType = res.table.data.reduce(function(prev, curr, index, arr) {
@@ -169,6 +174,8 @@ var url = "https://localhost:9002/hac";
                                     typeCode: typeCode,
                                     typeName: typeName
                                 }
+                            } else {
+                                return {text: c}
                             }
                         } else {
                             return {text: c}
@@ -211,8 +218,8 @@ var url = "https://localhost:9002/hac";
             this.addListener("connectionSuccess", () => {
                 resolve();
             });
-            this.addListener("connectionError", () => {
-                reject();
+            this.addListener("connectionError", (msg) => {
+                reject(msg);
             });
         });
     }
